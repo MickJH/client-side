@@ -1,1 +1,77 @@
-<p>registration works!</p>
+<div class="login-container">
+  <div class="login-box">
+    <h2>Register</h2>
+    <form [formGroup]="registrationForm" (ngSubmit)="register()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" />
+        <div
+          *ngIf="registrationForm.get('email')?.hasError('required')"
+          class="error-message"
+        >
+          Email is required
+        </div>
+        <div
+          *ngIf="registrationForm.get('email')?.hasError('email')"
+          class="error-message"
+        >
+          Invalid email format
+        </div>
+        <div *ngIf="emailError" class="error-message">
+          {{ emailError }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" formControlName="firstName" />
+        <div
+          *ngIf="registrationForm.get('firstName')?.hasError('required')"
+          class="error-message"
+        >
+          First Name is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" formControlName="lastName" />
+        <div
+          *ngIf="registrationForm.get('lastName')?.hasError('required')"
+          class="error-message"
+        >
+          Last Name is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" />
+        <div
+          *ngIf="registrationForm.get('password')?.hasError('required')"
+          class="error-message"
+        >
+          Password is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age" formControlName="age" />
+        <div
+          *ngIf="registrationForm.get('age')?.hasError('required')"
+          class="error-message"
+        >
+          Age is required
+        </div>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div class="registration-text">
+      Already have an account?
+      <a routerLink="/login" class="login-link">Login here</a>
+    </div>
+  </div>
+</div>

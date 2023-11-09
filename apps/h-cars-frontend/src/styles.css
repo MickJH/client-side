@@ -1,1 +1,16 @@
 @import 'bootstrap/dist/css/bootstrap.css';
+
+body {
+  background-image: url('./assets/background.jpg');
+
+  /* Gradient overlay */
+  background: linear-gradient(
+      to right,
+      rgba(132, 250, 176, 0.5),
+      rgba(143, 211, 244, 0.5)
+    ),
+    url('./assets/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

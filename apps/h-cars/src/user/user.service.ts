@@ -33,7 +33,7 @@ export class UserService {
     if (await bcrypt.compare(password, user.password)) {
       return this.removePassword(user);
     } else {
-      throw new HttpException('invalid credential', HttpStatus.BAD_REQUEST);
+      throw new HttpException('invalid credentials', HttpStatus.BAD_REQUEST);
     }
   }
   removePassword(user: User) {
@@ -41,9 +41,12 @@ export class UserService {
     delete removePassword['password'];
     return removePassword;
   }
-  // the new methods
-  async findByEmail(payload: JwtPayload) {
-    const email = payload.email;
+
+  async findByEmail(email: string) {
     return await this.userModel.findOne({ email });
+  }
+
+  async validatePayload(payload: JwtPayload) {
+   return payload;
   }
 }
