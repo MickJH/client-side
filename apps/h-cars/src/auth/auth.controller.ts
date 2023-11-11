@@ -5,23 +5,21 @@ import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './login.dto';
 import { JwtPayload } from 'jsonwebtoken';
+import { CarService } from '../car/car.service';
+import { CarDTO } from '../car/car.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
-  @Get('/onlyauth')
-  @UseGuards(AuthGuard('jwt'))
-  async hiddenInformation() {
-    return 'hidden information';
-  }
-
-  @Get('/anyone')
-  async publicInformation() {
-    return 'this can be seen by anyone';
+  @Get('/protected')
+  @UseGuards(JwtAuthGuard) 
+  protectedRoute() {
+    return 'This route is protected';
   }
 
   @Get('check-email/:email')
