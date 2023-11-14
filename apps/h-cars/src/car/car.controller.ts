@@ -22,15 +22,22 @@ export class CarController {
   @Get('all-cars')
   @UseGuards(JwtAuthGuard) 
   async getAllCars() {
-    const cars = await this.carService.findAll();
+    const cars = await this.carService.getAll();
     return cars;
   }
 
-  @Get('car/:id')
+  @Get('id/:id')
   @UseGuards(JwtAuthGuard) 
   async getCarById(@Param('id') id: string) {
     const car = await this.carService.findById(id);
     return car;
+  }
+
+  @Get('my-cars')
+  @UseGuards(JwtAuthGuard)
+  async getMyCars(@Body() user: JwtPayload) {
+    const cars = await this.carService.getMyCars(user._id);
+    return cars;
   }
 
   @Post('update-car/:id')

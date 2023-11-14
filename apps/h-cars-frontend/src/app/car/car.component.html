@@ -1,0 +1,40 @@
+<div class="car-container">
+  <div class="tabs">
+    <button (click)="showAllCars()">All Cars</button>
+    <button (click)="showMyCars()">My Cars</button>
+  </div>
+
+  <div *ngIf="activeTab === 'allCars'">
+    <h2>All Cars</h2>
+    <div *ngFor="let car of cars">
+      <div (click)="onSelectCar(car)">
+        {{ car.carModel }}
+      </div>
+    </div>
+    <button (click)="onCreateCar()">Create New Car</button>
+  </div>
+
+  <div *ngIf="activeTab === 'myCars'">
+    <h2>My Cars</h2>
+    <div *ngFor="let myCar of myCars">
+      <div (click)="onSelectCar(myCar)">
+        {{ myCar.carModel }}
+      </div>
+      <button (click)="onUpdateCar(myCar)">Update</button>
+      <button (click)="onDeleteCar(myCar._id!)">Delete</button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedCar">
+    <form [formGroup]="carForm" (ngSubmit)="saveCar()">
+      <div class="form-group">
+        <label for="carModel">Car Model</label>
+        <input type="text" id="carModel" formControlName="carModel" />
+      </div>
+
+      <!-- Add other form controls for your Car model -->
+
+      <button type="submit">Save Car</button>
+    </form>
+  </div>
+</div>

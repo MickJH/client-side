@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { FuelType, TransmissionType } from './car';
 
 export interface CarDTO {
@@ -9,4 +10,5 @@ export interface CarDTO {
   apkExpires: Date;
   numberPlate: string;
   constructionYear: number;
+  user: mongoose.Types.ObjectId;
 }

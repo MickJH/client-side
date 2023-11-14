@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export enum FuelType {
   Petrol = 'Petrol',
@@ -20,4 +20,5 @@ export interface Car extends Document {
   apkExpires: Date;
   numberPlate: string;
   constructionYear: number;
+  user: mongoose.Types.ObjectId;
 }

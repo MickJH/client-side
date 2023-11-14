@@ -21,7 +21,11 @@ export class CarService {
     return createdCar;
   }
 
-  async findAll() {
+  async getMyCars(userId: string): Promise<Car[]> {
+    return this.carModel.find({ user: userId }).exec();
+  }
+
+  async getAll() {
     return this.carModel.find().exec();
   }
 

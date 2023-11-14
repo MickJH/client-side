@@ -9,4 +9,5 @@ export const CarSchema = new mongoose.Schema({
   apkExpires: { type: Date },
   numberPlate: { type: String, unique: true, required: true },
   constructionYear: { type: Number, required: true },
+  user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
