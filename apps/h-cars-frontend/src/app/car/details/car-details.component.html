@@ -1,0 +1,61 @@
+<div class="car-container">
+  <div class="car-box">
+    <a class="btn btn-primary" [routerLink]="['/car']"> Go back </a>
+    <div class="details-container">
+      <div class="car-image-container">
+        <img [src]="car?.imageUrl" alt="Car Image" class="car-image" />
+      </div>
+
+      <div class="car-details-container">
+        <div class="info-row">
+          <div class="info-label">Car Model:</div>
+          <div>{{ car?.carModel }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Counter:</div>
+          <div>{{ car?.counter }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Type of Fuel:</div>
+          <div>{{ car?.typeOfFuel }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Transmission Type:</div>
+          <div>{{ car?.transmissionType }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">APK:</div>
+          <div>{{ car?.apk ? 'Yes' : 'No' }}</div>
+        </div>
+
+        <div *ngIf="car?.apk" class="info-row">
+          <div class="info-label">APK Expires:</div>
+          <div>{{ car?.apkExpires | date }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Number Plate:</div>
+          <div>{{ car?.numberPlate }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Construction Year:</div>
+          <div>{{ car?.constructionYear }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-5">
+      <div class="row mb-3">
+        <div class="col-md-12 text-center">
+          <a class="btn btn-warning" (click)="updateCar()"> Update car </a>
+          <a class="btn btn-danger" (click)="deleteCar()"> Delete car </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

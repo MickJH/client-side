@@ -1,0 +1,35 @@
+<!-- car-delete.component.html -->
+<div class="car-container">
+  <div class="car-box">
+    <h2>Delete Car</h2>
+    <ng-container *ngIf="!deletionSuccess; else successMessage">
+      <p>Are you sure you want to delete this car?</p>
+      <div class="container mt-5">
+        <div class="row mb-3">
+          <div class="col-md-6 text-center">
+            <button class="btn btn-danger" (click)="deleteCar()">
+              Yes, Delete
+            </button>
+          </div>
+          <div class="col-md-6 text-center">
+            <button class="btn btn-primary" (click)="goBack()">
+              No, Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #successMessage>
+      <p class="success-message">Car successfully deleted!</p>
+      <div class="container mt-5">
+        <div class="row mb-3">
+          <div class="col-md-12 text-center">
+            <button class="btn btn-primary" [routerLink]="['/car']">
+              Go to Car List
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

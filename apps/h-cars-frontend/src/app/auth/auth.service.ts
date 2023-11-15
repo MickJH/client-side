@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthResponse } from './auth.response';
 import { Observable } from 'rxjs';
 
@@ -11,6 +11,14 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
   register(user: any) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, user);
   }
@@ -21,6 +29,11 @@ export class AuthService {
 
   checkEmailAvailability(email: string): Observable<{ isAvailable: boolean }> {
     return this.http.get<{ isAvailable: boolean }>(`${this.apiUrl}/auth/check-email/${email}`);
+  }
+
+  getCurrentUser(): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.get<any>(`${this.apiUrl}/auth/current-user`, { headers });
   }
   
 }

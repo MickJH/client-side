@@ -1,27 +1,21 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+import { Body, Controller, Get, Param, Post, UseGuards, Request } from '@nestjs/common';
 import { UserDTO } from '../user/user.dto';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './login.dto';
-import { JwtPayload } from 'jsonwebtoken';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
-  @Get('/onlyauth')
-  @UseGuards(AuthGuard('jwt'))
-  async hiddenInformation() {
-    return 'hidden information';
-  }
-
-  @Get('/anyone')
-  async publicInformation() {
-    return 'this can be seen by anyone';
+  @Get('/protected')
+  @UseGuards(JwtAuthGuard) 
+  protectedRoute() {
+    return 'This route is protected';
   }
 
   @Get('check-email/:email')
@@ -48,5 +42,11 @@ export class AuthController {
     };
     const token = await this.authService.signPayload(payload);
     return { user, token };
+  }
+
+  @Get('current-user')
+  @UseGuards(JwtAuthGuard)
+  getCurrentUser(@Request() req) {
+    return req.user; // Returns the current user extracted from the token
   }
 }

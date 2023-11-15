@@ -1,0 +1,62 @@
+<div class="car-container">
+  <div class="car-box">
+    <div class="tabs">
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'allCars'"
+        (click)="showAllCars()"
+      >
+        All Cars
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'myCars'"
+        (click)="showMyCars()"
+      >
+        My cars
+      </button>
+    </div>
+
+    <div class="car-list">
+      <div
+        class="car-card"
+        *ngFor="let car of activeTab === 'allCars' ? cars : myCars"
+      >
+        <div class="info-row">
+          <img
+            *ngIf="car.imageUrl"
+            [src]="car.imageUrl"
+            alt="Auto Image"
+            class="car-image"
+          />
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Car Model:</div>
+          <div>{{ car.carModel }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Fuel:</div>
+          <div>{{ car.typeOfFuel }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Transmission:</div>
+          <div>{{ car.transmissionType }}</div>
+        </div>
+
+        <div class="car-buttons">
+          <button [routerLink]="['/car/details', car._id]">Details</button>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="row mb-3">
+        <div class="col-md-12 text-center">
+          <a class="btn btn-primary" [routerLink]="['create']"> Create Car </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
