@@ -1,40 +1,48 @@
 <div class="car-container">
-  <div class="tabs">
-    <button (click)="showAllCars()">All Cars</button>
-    <button (click)="showMyCars()">My Cars</button>
-  </div>
+  <div class="car-box">
+    <div
+      class="form-group"
+      *ngIf="activeTab === 'allCars' || activeTab === 'myCars'"
+    ></div>
 
-  <div *ngIf="activeTab === 'allCars'">
-    <h2>All Cars</h2>
-    <div *ngFor="let car of cars">
-      <div (click)="onSelectCar(car)">
-        {{ car.carModel }}
+    <div class="tabs">
+      <button (click)="showAllCars()">All Cars</button>
+      <button (click)="showMyCars()">My Cars</button>
+    </div>
+
+    <div class="car-list" *ngIf="activeTab === 'allCars'">
+      <div class="car-card" *ngFor="let car of cars" (click)="onSelectCar(car)">
+        <div class="info-row">
+          <div class="info-label">Car Model:</div>
+          <div>{{ car.carModel }}</div>
+        </div>
+
+        <!-- Add other fields from Car model -->
+
+        <div class="car-buttons">
+          <button (click)="onSelectCar(car)">View</button>
+        </div>
       </div>
     </div>
-    <button (click)="onCreateCar()">Create New Car</button>
-  </div>
 
-  <div *ngIf="activeTab === 'myCars'">
-    <h2>My Cars</h2>
-    <div *ngFor="let myCar of myCars">
-      <div (click)="onSelectCar(myCar)">
-        {{ myCar.carModel }}
+    <div class="car-list" *ngIf="activeTab === 'myCars'">
+      <div
+        class="car-card"
+        *ngFor="let myCar of myCars"
+        (click)="onSelectCar(myCar)"
+      >
+        <div class="info-row">
+          <div class="info-label">Car Model:</div>
+          <div>{{ myCar.carModel }}</div>
+        </div>
+
+        <!-- Add other fields from Car model -->
+
+        <div class="car-buttons">
+          <button (click)="onUpdateCar(myCar)">Update</button>
+          <button (click)="onDeleteCar(myCar._id!)">Delete</button>
+        </div>
       </div>
-      <button (click)="onUpdateCar(myCar)">Update</button>
-      <button (click)="onDeleteCar(myCar._id!)">Delete</button>
     </div>
-  </div>
-
-  <div *ngIf="selectedCar">
-    <form [formGroup]="carForm" (ngSubmit)="saveCar()">
-      <div class="form-group">
-        <label for="carModel">Car Model</label>
-        <input type="text" id="carModel" formControlName="carModel" />
-      </div>
-
-      <!-- Add other form controls for your Car model -->
-
-      <button type="submit">Save Car</button>
-    </form>
   </div>
 </div>
