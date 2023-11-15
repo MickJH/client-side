@@ -8,5 +8,6 @@ export interface Car {
     apkExpires?: Date;
     numberPlate: string;
     constructionYear: number;
+    imageUrl: string;
   }
   

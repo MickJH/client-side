@@ -20,5 +20,6 @@ export interface Car extends Document {
   apkExpires: Date;
   numberPlate: string;
   constructionYear: number;
-  user: mongoose.Types.ObjectId;
+  userEmail: string;
+  imageUrl: string;
 }

@@ -10,5 +10,6 @@ export interface CarDTO {
   apkExpires: Date;
   numberPlate: string;
   constructionYear: number;
-  user: mongoose.Types.ObjectId;
+  userEmail: string;
+  imageUrl: string;
 }

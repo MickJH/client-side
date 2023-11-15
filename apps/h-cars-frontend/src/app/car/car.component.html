@@ -1,46 +1,60 @@
 <div class="car-container">
   <div class="car-box">
-    <div
-      class="form-group"
-      *ngIf="activeTab === 'allCars' || activeTab === 'myCars'"
-    ></div>
-
     <div class="tabs">
-      <button (click)="showAllCars()">All Cars</button>
-      <button (click)="showMyCars()">My Cars</button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'allCars'"
+        (click)="showAllCars()"
+      >
+        All Cars
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'myCars'"
+        (click)="showMyCars()"
+      >
+        My cars
+      </button>
     </div>
 
-    <div class="car-list" *ngIf="activeTab === 'allCars'">
-      <div class="car-card" *ngFor="let car of cars" (click)="onSelectCar(car)">
+    <div class="car-list">
+      <div
+        class="car-card"
+        *ngFor="let car of activeTab === 'allCars' ? cars : myCars"
+      >
+        <div class="info-row">
+          <img
+            *ngIf="car.imageUrl"
+            [src]="car.imageUrl"
+            alt="Auto Image"
+            class="car-image"
+          />
+        </div>
+
         <div class="info-row">
           <div class="info-label">Car Model:</div>
           <div>{{ car.carModel }}</div>
         </div>
 
-        <!-- Add other fields from Car model -->
+        <div class="info-row">
+          <div class="info-label">Fuel:</div>
+          <div>{{ car.typeOfFuel }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Transmission:</div>
+          <div>{{ car.transmissionType }}</div>
+        </div>
 
         <div class="car-buttons">
-          <button (click)="onSelectCar(car)">View</button>
+          <button [routerLink]="['/car/details', car._id]">Details</button>
         </div>
       </div>
     </div>
-
-    <div class="car-list" *ngIf="activeTab === 'myCars'">
-      <div
-        class="car-card"
-        *ngFor="let myCar of myCars"
-        (click)="onSelectCar(myCar)"
-      >
-        <div class="info-row">
-          <div class="info-label">Car Model:</div>
-          <div>{{ myCar.carModel }}</div>
-        </div>
-
-        <!-- Add other fields from Car model -->
-
-        <div class="car-buttons">
-          <button (click)="onUpdateCar(myCar)">Update</button>
-          <button (click)="onDeleteCar(myCar._id!)">Delete</button>
+    <div class="container mt-5">
+      <div class="row mb-3">
+        <div class="col-md-12 text-center">
+          <a class="btn btn-primary" [routerLink]="['create']"> Create Car </a>
         </div>
       </div>
     </div>

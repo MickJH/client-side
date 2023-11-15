@@ -25,22 +25,25 @@ export class CarService {
   }
 
   getCarById(id: string): Observable<Car> {
-    return this.http.get<Car>(`${this.apiUrl}/car/id/${id}`);
+    const headers = this.getHeaders();
+    return this.http.get<Car>(`${this.apiUrl}/car/id/${id}`, { headers });
   }
 
   createCar(car: Car): Observable<Car> {
-    return this.http.post<Car>(`${this.apiUrl}/car/create-car`, car);
+    const headers = this.getHeaders();
+    return this.http.post<Car>(`${this.apiUrl}/car/create-car`, car, { headers });
   }
 
   updateCar(id: string, car: Car): Observable<Car> {
-    return this.http.post<Car>(`${this.apiUrl}/car/update-car/${id}`, car);
+    const headers = this.getHeaders();
+    return this.http.post<Car>(`${this.apiUrl}/car/update-car/${id}`, car, { headers });
   }
 
   deleteCar(id: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/car/delete-car/${id}`, {});
+    const headers = this.getHeaders();
+    return this.http.post<any>(`${this.apiUrl}/car/delete-car/${id}`, {}, { headers });
   }
 
-   // New function to get user-specific cars
    getUserCars(): Observable<Car[]> {
     const headers = this.getHeaders();
     return this.http.get<Car[]>(`${this.apiUrl}/car/my-cars`, { headers });

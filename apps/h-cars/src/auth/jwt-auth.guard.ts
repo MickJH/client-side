@@ -22,14 +22,12 @@ export class JwtAuthGuard implements CanActivate {
     const { req } = ctx.getContext();
     const token = req.headers.authorization?.replace('Bearer ', '');
 
-    console.log('Token:', token);
-
     if (!token) {
       return false; // No token provided
     }
 
     try {
-      const secret = process.env.SECRET_KEY; // Retrieve secret key from environment
+      const secret = process.env.SECRET_KEY; 
       const decoded = this.jwtService.verify(token, { secret });
       req.user = decoded; // Attach the user object to the request
       return true;
