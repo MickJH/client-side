@@ -9,5 +9,6 @@ export interface Car {
     numberPlate: string;
     constructionYear: number;
     imageUrl: string;
+    userEmail: string;
   }
   

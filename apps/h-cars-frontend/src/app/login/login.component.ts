@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       // The form is valid, proceed with login
       const formData = this.loginForm.value;
-      console.log('Login form data:', formData);
   
       // Reset error messages
       this.emailError = '';
@@ -40,7 +39,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(formData).subscribe(
         (response) => {
           localStorage.setItem('token', response.token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/car']);
         },
         (error) => {
           if (error.status === 400 && error.error.message === 'invalid credentials') {

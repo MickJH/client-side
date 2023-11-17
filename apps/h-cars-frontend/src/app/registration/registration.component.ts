@@ -33,7 +33,6 @@ export class RegistrationComponent implements OnInit {
     if (this.registrationForm.valid) {
       // The form is valid, proceed with registration
       const formData = this.registrationForm.value;
-      console.log('Registration form data:', formData);
 
        // Reset error messages
        this.emailError = '';
@@ -43,7 +42,7 @@ export class RegistrationComponent implements OnInit {
       this.authService.register(formData).subscribe(
         (response) => {
           localStorage.setItem('token', response.token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/car']);
         },
         (error) => {
           if (error.status === 400 && error.error.message === 'user already exists') {

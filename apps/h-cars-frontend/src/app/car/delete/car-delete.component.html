@@ -1,26 +1,27 @@
-<!-- car-delete.component.html -->
 <div class="car-container">
-  <div class="car-box">
-    <h2>Delete Car</h2>
-    <ng-container *ngIf="!deletionSuccess; else successMessage">
-      <p>Are you sure you want to delete this car?</p>
+  <div class="car-box mt-4">
+    <ng-container *ngIf="isCarOwner; else noPermission">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <p>Are you sure you want to delete this car?</p>
+            <p><strong>Car Model:</strong> {{ car?.carModel }}</p>
+            <p><strong>Number Plate:</strong> {{ car?.numberPlate }}</p>
+          </div>
+        </div>
+      </div>
       <div class="container mt-5">
         <div class="row mb-3">
-          <div class="col-md-6 text-center">
+          <div class="col-md-12 text-center">
             <button class="btn btn-danger" (click)="deleteCar()">
-              Yes, Delete
-            </button>
-          </div>
-          <div class="col-md-6 text-center">
-            <button class="btn btn-primary" (click)="goBack()">
-              No, Go Back
+              Delete car
             </button>
           </div>
         </div>
       </div>
     </ng-container>
-    <ng-template #successMessage>
-      <p class="success-message">Car successfully deleted!</p>
+    <ng-template #noPermission>
+      <p>Permission denied: You cannot delete this car.</p>
       <div class="container mt-5">
         <div class="row mb-3">
           <div class="col-md-12 text-center">
