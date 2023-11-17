@@ -19,7 +19,7 @@ export class CarCreateComponent {
     private router: Router
   ) {
     this.carForm = this.formBuilder.group({
-      userEmail: this.authService.getCurrentUser().subscribe(user => { return user.email }).toString(), 
+      userEmail: ['', Validators.required], 
       carModel: ['', Validators.required],
       imageUrl: ['', Validators.required],
       counter: ['', Validators.required],
@@ -29,6 +29,12 @@ export class CarCreateComponent {
       apkExpires: [null],
       numberPlate: ['', Validators.required],
       constructionYear: ['', Validators.required],
+    });
+
+    this.authService.getCurrentUser().subscribe(user => {
+      this.carForm.patchValue({
+        userEmail: user.email
+      });
     });
   }
 

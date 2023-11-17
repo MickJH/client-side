@@ -12,6 +12,7 @@ import { CarDetailsComponent } from './car/details/car-details.component';
 import { CarCreateComponent } from './car/create/car-create.component';
 import { CarUpdateComponent } from './car/update/car-update.component';
 import { CarDeleteComponent } from './car/delete/car-delete.component';
+import { AuthGuard } from './auth/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { CarDeleteComponent } from './car/delete/car-delete.component';
     RouterModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {

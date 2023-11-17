@@ -1,7 +1,7 @@
 .car-container {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   min-height: 80vh;
   position: relative;
 }
@@ -10,12 +10,43 @@
   background-color: #1f1f1f;
   border-radius: 8px;
   padding: 20px;
-  width: 90%;
-  height: 55em;
+  width: 400px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
   color: white;
-  margin: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
 }
 
 h2 {

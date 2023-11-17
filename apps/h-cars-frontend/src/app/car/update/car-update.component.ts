@@ -13,6 +13,7 @@ import { AuthService } from '../../auth/auth.service';
 export class CarUpdateComponent implements OnInit {
   carForm: FormGroup;
   car: Car | null = null;
+  isCarOwner = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,7 +23,6 @@ export class CarUpdateComponent implements OnInit {
     private authService: AuthService
   ) {
     this.carForm = this.formBuilder.group({
-        userEmail: this.authService.getCurrentUser().subscribe(user => { return user.email }).toString(), 
         carModel: ['', Validators.required],
         imageUrl: ['', Validators.required],
         counter: ['', Validators.required],
@@ -42,17 +42,28 @@ export class CarUpdateComponent implements OnInit {
         this.carService.getCarById(carId).subscribe((car) => {
           this.car = car;
 
-          // Patch the form with existing car details
-          this.carForm.patchValue({
-            carModel: car.carModel,
-            imageUrl: car.imageUrl,
-            counter: car.counter,
-            typeOfFuel: car.typeOfFuel,
-            transmissionType: car.transmissionType,
-            apk: car.apk,
-            apkExpires: car.apkExpires,
-            numberPlate: car.numberPlate,
-            constructionYear: car.constructionYear,
+          // Check if the current user is the creator of the car
+          this.authService.getCurrentUser().subscribe((user) => {
+            if (user && car.userEmail === user.email) {
+              this.isCarOwner = true;
+              // Patch the form with existing car details
+              this.carForm.patchValue({
+                carModel: car.carModel,
+                imageUrl: car.imageUrl,
+                counter: car.counter,
+                typeOfFuel: car.typeOfFuel,
+                transmissionType: car.transmissionType,
+                apk: car.apk,
+                apkExpires: car.apkExpires,
+                numberPlate: car.numberPlate,
+                constructionYear: car.constructionYear,
+              });
+            } else {
+              // Redirect or show an error message indicating the user doesn't have permission
+              setTimeout(() => {
+                this.router.navigate(['/car']);
+              }, 2000);
+            }
           });
         });
       }

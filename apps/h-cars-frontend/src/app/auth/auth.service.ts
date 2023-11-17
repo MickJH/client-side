@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthResponse } from './auth.response';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api';
+  currentUser: any;
 
   constructor(private http: HttpClient) {}
 
@@ -33,7 +36,12 @@ export class AuthService {
 
   getCurrentUser(): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.get<any>(`${this.apiUrl}/auth/current-user`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/auth/current-user`, { headers }).pipe(
+      map((user) => {
+        this.currentUser = user; // Store the user information
+        return user;
+      }),
+    );
   }
   
 }
