@@ -13,6 +13,7 @@ import { CarCreateComponent } from './car/create/car-create.component';
 import { CarUpdateComponent } from './car/update/car-update.component';
 import { CarDeleteComponent } from './car/delete/car-delete.component';
 import { AuthGuard } from './auth/auth-guard.service';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AuthGuard } from './auth/auth-guard.service';
     CarDetailsComponent,
     CarCreateComponent,
     CarUpdateComponent,
-    CarDeleteComponent
+    CarDeleteComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
