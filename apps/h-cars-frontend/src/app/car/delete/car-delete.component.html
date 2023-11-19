@@ -16,6 +16,13 @@
             <button class="btn btn-danger" (click)="deleteCar()">
               Delete car
             </button>
+
+            <button
+              class="btn btn-primary mt-3"
+              [routerLink]="['/car/details', car!._id]"
+            >
+              Go back
+            </button>
           </div>
         </div>
       </div>

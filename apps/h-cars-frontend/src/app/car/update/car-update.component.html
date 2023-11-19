@@ -4,7 +4,12 @@
       <div class="container">
         <div class="row mb-3">
           <div class="col-md-12">
-            <a class="btn btn-primary" [routerLink]="['/car']"> Go back </a>
+            <a
+              class="btn btn-primary"
+              [routerLink]="['/car/details', car!._id]"
+            >
+              Go back
+            </a>
           </div>
         </div>
       </div>
