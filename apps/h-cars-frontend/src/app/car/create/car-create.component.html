@@ -2,117 +2,144 @@
   <div class="car-box mt-4">
     <h2>Create Car</h2>
     <form [formGroup]="carForm" (ngSubmit)="createCar()">
-      <div class="form-group">
-        <label for="carModel">Car Model</label>
-        <input type="text" id="carModel" formControlName="carModel" />
-        <div
-          *ngIf="carForm.get('carModel')?.hasError('required')"
-          class="error-message"
-        >
-          Car Model is required
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="carModel">Car Model</label>
+            <input type="text" id="carModel" formControlName="carModel" />
+            <div
+              *ngIf="carForm.get('carModel')?.hasError('required')"
+              class="error-message"
+            >
+              Car Model is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" id="imageUrl" formControlName="imageUrl" />
+            <div
+              *ngIf="carForm.get('imageUrl')?.hasError('required')"
+              class="error-message"
+            >
+              Image URL is required
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="imageUrl">Image URL</label>
-        <input type="text" id="imageUrl" formControlName="imageUrl" />
-        <div
-          *ngIf="carForm.get('imageUrl')?.hasError('required')"
-          class="error-message"
-        >
-          Image URL is required
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="counter">Counter</label>
+            <input type="number" id="counter" formControlName="counter" />
+            <div
+              *ngIf="carForm.get('counter')?.hasError('required')"
+              class="error-message"
+            >
+              Counter is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="typeOfFuel">Type of Fuel</label>
+            <select id="typeOfFuel" formControlName="typeOfFuel">
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Electric">Electric</option>
+            </select>
+            <div
+              *ngIf="carForm.get('typeOfFuel')?.hasError('required')"
+              class="error-message"
+            >
+              Type of Fuel is required
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="counter">Counter</label>
-        <input type="number" id="counter" formControlName="counter" />
-        <div
-          *ngIf="carForm.get('counter')?.hasError('required')"
-          class="error-message"
-        >
-          Counter is required
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="transmissionType">Transmission Type</label>
+            <select id="transmissionType" formControlName="transmissionType">
+              <option value="Automatic">Automatic</option>
+              <option value="Manual">Manual</option>
+            </select>
+            <div
+              *ngIf="carForm.get('transmissionType')?.hasError('required')"
+              class="error-message"
+            >
+              Transmission Type is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="numberPlate">Number Plate</label>
+            <input type="text" id="numberPlate" formControlName="numberPlate" />
+            <div
+              *ngIf="carForm.get('numberPlate')?.hasError('required')"
+              class="error-message"
+            >
+              Number Plate is required
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="typeOfFuel">Type of Fuel</label>
-        <select id="typeOfFuel" formControlName="typeOfFuel">
-          <option value="Petrol">Petrol</option>
-          <option value="Diesel">Diesel</option>
-          <option value="Electric">Electric</option>
-        </select>
-        <div
-          *ngIf="carForm.get('typeOfFuel')?.hasError('required')"
-          class="error-message"
-        >
-          Type of Fuel is required
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="constructionYear">Construction Year</label>
+            <input
+              type="number"
+              id="constructionYear"
+              formControlName="constructionYear"
+            />
+            <div
+              *ngIf="carForm.get('constructionYear')?.hasError('required')"
+              class="error-message"
+            >
+              Construction Year is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="apk">APK</label>
+            <input type="checkbox" id="apk" formControlName="apk" />
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="transmissionType">Transmission Type</label>
-        <select id="transmissionType" formControlName="transmissionType">
-          <option value="Automatic">Automatic</option>
-          <option value="Manual">Manual</option>
-        </select>
-        <div
-          *ngIf="carForm.get('transmissionType')?.hasError('required')"
-          class="error-message"
-        >
-          Transmission Type is required
+      <div class="row">
+        <div class="col-md-6">
+          <div *ngIf="carForm.get('apk')?.value" class="form-group">
+            <label for="apkExpires">APK Expires</label>
+            <input type="date" id="apkExpires" formControlName="apkExpires" />
+            <div
+              *ngIf="carForm.get('apkExpires')?.hasError('required')"
+              class="error-message"
+            >
+              APK Expires is required when APK is selected
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="apk">APK</label>
-        <input type="checkbox" id="apk" formControlName="apk" />
-      </div>
-
-      <div *ngIf="carForm.get('apk')?.value" class="form-group">
-        <label for="apkExpires">APK Expires</label>
-        <input type="date" id="apkExpires" formControlName="apkExpires" />
-        <div
-          *ngIf="carForm.get('apkExpires')?.hasError('required')"
-          class="error-message"
-        >
-          APK Expires is required when APK is selected
+        <div class="col-md-6 button-container text-center">
+          <button type="submit" class="btn btn-primary">Create Car</button>
+          <button [routerLink]="['/car']" class="btn btn-secondary mt-2">
+            Back to Car List
+          </button>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="numberPlate">Number Plate</label>
-        <input type="text" id="numberPlate" formControlName="numberPlate" />
-        <div
-          *ngIf="carForm.get('numberPlate')?.hasError('required')"
-          class="error-message"
-        >
-          Number Plate is required
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="constructionYear">Construction Year</label>
-        <input
-          type="number"
-          id="constructionYear"
-          formControlName="constructionYear"
-        />
-        <div
-          *ngIf="carForm.get('constructionYear')?.hasError('required')"
-          class="error-message"
-        >
-          Construction Year is required
-        </div>
-      </div>
-
-      <div class="button-container">
-        <button type="submit">Create Car</button>
       </div>
     </form>
-
-    <div class="registration-text">
-      <a routerLink="/car" class="login-link">Back to Car List</a>
-    </div>
   </div>
 </div>
