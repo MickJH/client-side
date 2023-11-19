@@ -1,0 +1,40 @@
+.about-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  position: relative;
+}
+
+.about-box {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 20px;
+  width: 80%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+}
+
+.erd-section img {
+  max-width: 35%;
+}
+
+.functionalities-section {
+  margin-top: 20px;
+}
+
+.functionalities-section h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.functionalities-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.functionalities-section li {
+  margin-bottom: 10px;
+}
