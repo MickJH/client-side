@@ -39,7 +39,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.ANGULAR_PUBLISHTOKEN }}
           action: "upload"
-          app_location: "apps/h-cars-frontend/dist/h-cars-frontend"
+          app_location: "dist/apps/h-cars"
 
       - name: Deploy backend API to Azure Web App
         uses: azure/webapps-deploy@v2
