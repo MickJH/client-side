@@ -63,7 +63,7 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: ""
-          app_build_command: 'npm run build'
+          app_build_command: 'nx build'
 
   deploy-backend-api:
     runs-on: ubuntu-latest
@@ -92,4 +92,4 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
           package: .
-          app_build_command: 'npm run build'
+          app_build_command: 'nx build'
