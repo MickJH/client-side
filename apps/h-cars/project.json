@@ -16,7 +16,8 @@
         "tsConfig": "apps/h-cars/tsconfig.app.json",
         "assets": ["apps/h-cars/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/h-cars/webpack.config.js"
+        "webpackConfig": "apps/h-cars/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},
