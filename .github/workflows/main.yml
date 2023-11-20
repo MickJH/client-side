@@ -20,13 +20,13 @@ jobs:
 
       - name: Install dependencies and build Angular app
         run: |
-          cd .\apps\h-cars-frontend 
+          cd apps/h-cars-frontend 
           npm install
           npm run build --if-present
 
       - name: Install dependencies for the backend API
         run: |
-          cd .\apps\h-cars
+          cd apps/h-cars
           npm install
 
   deploy:
