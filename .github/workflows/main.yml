@@ -58,7 +58,7 @@ jobs:
         run: npm install
 
       - name: Build Angular app
-        run: npm run deploy
+        run: nx run h-cars-frontend:build
 
       - name: Deploy to static Azure Web App
         id: builddeploy
