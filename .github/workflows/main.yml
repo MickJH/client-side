@@ -39,12 +39,12 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.ANGULAR_PUBLISHTOKEN }}
           action: "upload"
-          app_location: "dist/dist"  # Adjust this path based on your project structure
+          app_location: "dist/h-cars"
 
       - name: Deploy backend API to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'your-backend-app-name'
-          slot-name: 'Production'  # Adjust if using slots
+          app-name: 'h-cars'
+          slot-name: 'Production' 
           publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
-          package: 'backend-api'  # Adjust this path based on your project structure
+          package: 'h-cars'  
