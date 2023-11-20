@@ -63,6 +63,7 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: ""
+          app_build_command: 'npm run build'
 
   deploy-backend-api:
     runs-on: ubuntu-latest
