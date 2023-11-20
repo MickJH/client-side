@@ -55,7 +55,7 @@ jobs:
         run: unzip h-cars-release.zip
 
       - name: Install Nx CLI
-        run: npm install -g @nrwl/cli
+        run: npm install -g nx@latest
 
       - name: Install dependencies for Nx
         run: npm install
