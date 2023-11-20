@@ -1,26 +1,37 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent, RouterTestingModule],
-    }).compileComponents();
-  });
+  let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome h-cars-frontend'
-    );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [RouterTestingModule],
+    }).compileComponents().then(() => {
+      fixture = TestBed.createComponent(AppComponent);
+      component = fixture.componentInstance;
+    });
+  }));
+
+  it('should create the app', () => {
+    expect(component).toBeTruthy();
   });
 
   it(`should have as title 'h-cars-frontend'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('h-cars-frontend');
+    // Trigger change detection
+    fixture.detectChanges();
+    expect(component.title).toEqual('h-cars-frontend');
+  });
+
+  it('should render title', () => {
+    // Trigger change detection
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const titleElement = compiled.querySelector('.title');
+
+    expect(titleElement?.textContent).toContain('h-cars-frontend');
   });
 });
