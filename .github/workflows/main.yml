@@ -54,6 +54,12 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip h-cars-release.zip
 
+      - name: Install Nx CLI
+        run: npm install -g nx
+
+      - name: Install dependencies for Nx
+        run: npm install
+
       - name: Deploy to static Azure Web App
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
