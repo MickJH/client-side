@@ -54,14 +54,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip h-cars-release.zip
 
-      - name: Install Nx CLI
-        run: |
-          npm install -g nx@latest
-          echo "::add-path::/usr/local/bin"
-          source $GITHUB_WORKSPACE/.bashrc  
-
-      - name: Install dependencies for Nx
+      - name: Install dependencies
         run: npm install
+
+      - name: Build Angular app
+        run: npm run deploy
 
       - name: Deploy to static Azure Web App
         id: builddeploy
@@ -69,10 +66,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.ANGULAR_PUBLISHTOKEN }}
           action: "upload"
-          app_location: "/"
-          api_location: ""
-          output_location: ""
-          app_build_command: 'nx build'
+          app_location: "dist/apps/h-cars-frontend"
 
   deploy-backend-api:
     runs-on: ubuntu-latest
