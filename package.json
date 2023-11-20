@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "deploy": "nx run h-cars-frontend:build",
-     "build": "nx run-many -t build",
-     "test": "nx run-many -t test"
- },
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "start": "nx serve h-cars-frontend",
+    "build:azure": "nx run-many -t build"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~16.2.0",
