@@ -21,6 +21,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Install Azure CLI
+        run: npm install -g @azure/static-web-apps-cli@1.1.6
+
       - name: Build Angular App
         run: npm run deploy
 
