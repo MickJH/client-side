@@ -5,10 +5,7 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "start": "nx serve h-cars-frontend",
-    "deploy": "nx run h-cars-frontend:build && npm run deploy-azure",
-    "deploy-azure": "npx @azure/static-web-apps-cli login && npx @azure/static-web-apps-cli list && npx @azure/static-web-apps-cli deploy",
-    "build:azure": "nx run-many -t build"
+    "start": "nx serve h-cars-frontend"
   },
   "private": true,
   "dependencies": {
