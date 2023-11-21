@@ -20,6 +20,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+          
+      - name: Set up environment variables
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
       - name: npm install, build, and test
         run: |
@@ -59,4 +64,4 @@ jobs:
           app-name: 'H-Cars-Backend'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A679EFDAE3B348D486A629CFD096E0D9 }}
+          publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
