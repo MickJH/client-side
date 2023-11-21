@@ -99,3 +99,6 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
           package: .
+          env: |
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
