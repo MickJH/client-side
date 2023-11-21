@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
@@ -23,21 +24,20 @@ jobs:
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
-      - name: npm install, build, and test
+      - name: Install dependencies and build
         run: |
-          npm install
+          npm ci
           npm run build --if-present
-          npm run test --if-present
 
       - name: Zip artifacts for deployment
         run: |
-          cd ${GITHUB_WORKSPACE}/dist/apps/h-cars/ && zip ${GITHUB_WORKSPACE}/h-cars-release.zip ./* -r
+          cd dist/apps/h-cars-frontend && zip -r h-cars-frontend.zip *
 
-      - name: Upload h-cars artifact for deployment job
-        uses: actions/upload-artifact@v3
+      - name: Upload h-cars-frontend artifact for deployment job
+        uses: actions/upload-artifact@v2
         with:
-          name: h-cars
-          path: h-cars-release.zip
+          name: h-cars-frontend
+          path: h-cars-frontend.zip
 
   deploy-frontend-app:
     runs-on: ubuntu-latest
@@ -47,27 +47,17 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
-          name: h-cars
+          name: h-cars-frontend
 
       - name: Unzip artifact for deployment
-        run: unzip h-cars-release.zip
-
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Show availabale scripts
-        run: npm run
-
-      - name: Build Angular app
-        run: npm run deploy
+        run: unzip -o h-cars-frontend.zip -d dist/apps/h-cars-frontend
 
       - name: Deploy to static Azure Web App
-        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.ANGULAR_PUBLISHTOKEN }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "upload"
           app_location: "dist/apps/h-cars-frontend"
 
@@ -76,26 +66,26 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+      
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: h-cars
 
       - name: Unzip artifact for deployment
-        run: unzip h-cars-release.zip
+        run: unzip -o h-cars-release.zip -d dist/apps/h-cars
 
       - name: Install dependencies
-        run: npm install
+        working-directory: dist/apps/h-cars
+        run: npm ci
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
+      - name: Deploy to Azure App Service for Node.js
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'NxWorkshop'
+          app-name: 'h-cars'  # Replace with your Azure App Service name
           slot-name: 'Production'
-          publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
+          publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
           package: .
-          app_build_command: 'nx build'
+
+# Add more steps if needed for database migrations, environment setup, etc.
