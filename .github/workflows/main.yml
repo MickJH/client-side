@@ -80,6 +80,11 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: Set up environment variables
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
@@ -91,7 +96,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
@@ -99,6 +104,3 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
           package: .
-          env: |
-            MONGO_URI=${{ secrets.MONGO_URI }}
-            SECRET_KEY=${{ secrets.SECRET_KEY }}
