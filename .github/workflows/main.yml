@@ -59,4 +59,4 @@ jobs:
           app-name: 'H-Cars-Backend'
           slot-name: 'production'
           package: .
-          publish-profile: ${{ secrets.NESTJS_PUBLISHPROFILE }}
+          publish-profile: ${{ secrets.NEXTJS_PUBLISHPROFILE }}
