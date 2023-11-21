@@ -55,7 +55,7 @@ jobs:
         run: unzip h-cars-release.zip
 
       - name: Change to the app directory
-        run: cd h-cars-frontend
+        run: cd apps/h-cars-frontend
 
       - name: Install Nx CLI
         run: npm install -g nx@latest
