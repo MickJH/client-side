@@ -54,8 +54,8 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip h-cars-release.zip
 
-      - name: Change to the app directory
-        run: cd apps/h-cars-frontend
+      - name: Set workspace root
+        run: cd $GITHUB_WORKSPACE
 
       - name: Install Nx CLI
         run: npm install -g nx@latest
