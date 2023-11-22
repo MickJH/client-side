@@ -721,6 +721,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
     app.use(passport_1.default.initialize());
+    app.useGlobalPipes(new common_1.ValidationPipe()); // Enable global validation pipe
     const globalPrefix = 'api';
     app.setGlobalPrefix(globalPrefix);
     const port = process.env.PORT || 3000;
