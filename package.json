@@ -5,8 +5,7 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "start": "nx serve h-cars-frontend",
-    "startBackend": "nx serve h-cars"
+    "start": "nx serve h-cars-frontend"
   },
   "private": true,
   "dependencies": {

@@ -47,10 +47,30 @@
         </div>
 
         <div class="car-buttons">
-          <button [routerLink]="['/car/details', car._id]">Details</button>
+          <button
+            [routerLink]="['/car/details', car._id]"
+            class="btn btn-success"
+          >
+            Details
+          </button>
+          <button
+            *ngIf="activeTab === 'myCars'"
+            [routerLink]="['/car/update', car._id]"
+            class="btn btn-warning"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="activeTab === 'myCars'"
+            [routerLink]="['/car/delete', car._id]"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
+
     <div class="container mt-5">
       <div class="row mb-3">
         <div class="col-md-12 text-center">

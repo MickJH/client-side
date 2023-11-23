@@ -1,5 +1,3 @@
-import mongoose, { Document } from 'mongoose';
-
 export enum FuelType {
   Petrol = 'Petrol',
   Diesel = 'Diesel',

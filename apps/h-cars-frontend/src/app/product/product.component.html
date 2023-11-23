@@ -1,0 +1,73 @@
+<!-- product.component.html -->
+
+<div class="product-container">
+  <div class="product-box">
+    <div class="tabs">
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'allProducts'"
+        (click)="showAllProducts()"
+      >
+        All Products
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'myProducts'"
+        (click)="showMyProducts()"
+      >
+        My Products
+      </button>
+    </div>
+
+    <div class="product-list">
+      <div
+        class="product-card"
+        *ngFor="
+          let product of activeTab === 'allProducts' ? products : myProducts
+        "
+      >
+        <div class="info-row">
+          <img
+            *ngIf="product.imageUrl"
+            [src]="product.imageUrl"
+            alt="Product Image"
+            class="product-image"
+          />
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Product Name:</div>
+          <div>{{ product.productName }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Price:</div>
+          <div>{{ product.price | currency }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Description:</div>
+          <div>{{ product.description }}</div>
+        </div>
+
+        <div class="product-buttons">
+          <button
+            [routerLink]="['/product/details', product.id]"
+            class="btn btn-success"
+          >
+            Details
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="row mb-3">
+        <div class="col-md-12 text-center">
+          <a class="btn btn-primary" [routerLink]="['create']">
+            Create Product
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
