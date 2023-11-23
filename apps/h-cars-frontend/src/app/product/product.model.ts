@@ -5,14 +5,7 @@ export interface Product {
   description: string;
   userEmail: string;
   imageUrl: string;
-  category: [
-    'Electronic',
-    'Liquid',
-    'Wheels',
-    'Tools',
-    'Car Accessoires',
-    'Other'
-  ];
+  category: 'Electronic' | 'Liquid' | 'Wheels' | 'Tools' | 'Car Accessoires' | 'Other';
   brand: string;
   createdAt: Date;
 }
