@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UserDTO } from '../user/user.dto';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
@@ -9,11 +17,11 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(
     private userService: UserService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   @Get('/protected')
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   protectedRoute() {
     return 'This route is protected';
   }
@@ -47,6 +55,6 @@ export class AuthController {
   @Get('current-user')
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@Request() req) {
-    return req.user; // Returns the current user extracted from the token
+    return req.user;
   }
 }

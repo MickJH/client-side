@@ -1,4 +1,4 @@
-.car-container {
+.product-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.car-box {
+.product-box {
   background-color: #1f1f1f;
   border-radius: 8px;
   padding: 20px;
@@ -42,14 +42,14 @@ h2 {
   color: white;
 }
 
-.car-list {
+.product-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-top: 20px;
 }
 
-.car-card {
+.product-card {
   background-color: #1f1f1f;
   border-radius: 8px;
   padding: 20px;
@@ -59,11 +59,11 @@ h2 {
   width: 250px;
 }
 
-.car-card:hover {
+.product-card:hover {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
 }
 
-.car-image {
+.product-image {
   max-width: 100%;
   height: auto;
   margin-bottom: 10px;
@@ -79,7 +79,7 @@ h2 {
   font-weight: bold;
 }
 
-.car-buttons button {
+.product-buttons button {
   padding: 8px;
   color: white;
   border: none;

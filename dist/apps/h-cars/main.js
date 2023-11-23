@@ -301,7 +301,7 @@ let AuthController = exports.AuthController = class AuthController {
         return { user, token };
     }
     getCurrentUser(req) {
-        return req.user; // Returns the current user extracted from the token
+        return req.user;
     }
 };
 tslib_1.__decorate([
@@ -521,8 +521,8 @@ let CarService = exports.CarService = class CarService {
         await createdCar.save();
         return createdCar;
     }
-    async getMyCars(userId) {
-        return this.carModel.find({ user: userId }).exec();
+    async getMyCars(userEmail) {
+        return this.carModel.find({ userEmail }).exec();
     }
     async getAll() {
         return this.carModel.find().exec();
@@ -572,12 +572,11 @@ exports.CarSchema = new mongoose.Schema({
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a, _b, _c, _d;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CarController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
-const jsonwebtoken_1 = __webpack_require__(18);
 const car_service_1 = __webpack_require__(24);
 const car_dto_1 = __webpack_require__(27);
 const jwt_auth_guard_1 = __webpack_require__(20);
@@ -597,8 +596,9 @@ let CarController = exports.CarController = class CarController {
         const car = await this.carService.findById(id);
         return car;
     }
-    async getMyCars(user) {
-        const cars = await this.carService.getMyCars(user._id);
+    async getMyCars(req) {
+        const userEmail = req.user.email;
+        const cars = await this.carService.getMyCars(userEmail);
         return cars;
     }
     async updateCar(id, carDTO) {
@@ -636,9 +636,9 @@ tslib_1.__decorate([
 tslib_1.__decorate([
     (0, common_1.Get)('my-cars'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    tslib_1.__param(0, (0, common_1.Body)()),
+    tslib_1.__param(0, (0, common_1.Req)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof jsonwebtoken_1.JwtPayload !== "undefined" && jsonwebtoken_1.JwtPayload) === "function" ? _c : Object]),
+    tslib_1.__metadata("design:paramtypes", [Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "getMyCars", null);
 tslib_1.__decorate([
@@ -647,7 +647,7 @@ tslib_1.__decorate([
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, typeof (_d = typeof car_dto_1.CarDTO !== "undefined" && car_dto_1.CarDTO) === "function" ? _d : Object]),
+    tslib_1.__metadata("design:paramtypes", [String, typeof (_c = typeof car_dto_1.CarDTO !== "undefined" && car_dto_1.CarDTO) === "function" ? _c : Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "updateCar", null);
 tslib_1.__decorate([
@@ -721,6 +721,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
     app.use(passport_1.default.initialize());
+    app.useGlobalPipes(new common_1.ValidationPipe()); // Enable global validation pipe
     const globalPrefix = 'api';
     app.setGlobalPrefix(globalPrefix);
     const port = process.env.PORT || 3000;

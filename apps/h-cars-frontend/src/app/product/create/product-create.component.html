@@ -1,0 +1,106 @@
+<div class="product-container">
+  <div class="product-box mt-4">
+    <h2>Create Product</h2>
+    <form [formGroup]="productForm" (ngSubmit)="createProduct()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" formControlName="productName" />
+            <div
+              *ngIf="productForm.get('productName')?.hasError('required')"
+              class="error-message"
+            >
+              Product Name is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" id="price" formControlName="price" />
+            <div
+              *ngIf="productForm.get('price')?.hasError('required')"
+              class="error-message"
+            >
+              Price is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description"></textarea>
+            <div
+              *ngIf="productForm.get('description')?.hasError('required')"
+              class="error-message"
+            >
+              Description is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" id="imageUrl" formControlName="imageUrl" />
+            <div
+              *ngIf="productForm.get('imageUrl')?.hasError('required')"
+              class="error-message"
+            >
+              Image URL is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" formControlName="category">
+              <option value="Electronic">Electronic</option>
+              <option value="Liquid">Liquid</option>
+              <option value="Wheels">Wheels</option>
+              <option value="Tools">Tools</option>
+              <option value="Car Accessoires">Car Accessories</option>
+              <option value="Other">Other</option>
+            </select>
+            <div
+              *ngIf="productForm.get('category')?.hasError('required')"
+              class="error-message"
+            >
+              Category is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" id="brand" formControlName="brand" />
+            <div
+              *ngIf="productForm.get('brand')?.hasError('required')"
+              class="error-message"
+            >
+              Brand is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 button-container text-center">
+          <button type="submit" class="btn btn-primary">Create Product</button>
+          <button [routerLink]="['/product']" class="btn btn-secondary mt-2">
+            Back to Product List
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

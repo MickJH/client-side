@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -14,22 +14,34 @@ import { CarUpdateComponent } from './car/update/car-update.component';
 import { CarDeleteComponent } from './car/delete/car-delete.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AboutComponent } from './about/about.component';
+import { ProductComponent } from './product/product.component';
+import { ProductCreateComponent } from './product/create/product-create.component';
+import { ProductDeleteComponent } from './product/delete/product-delete.component';
+import { ProductDetailsComponent } from './product/details/product-details.component';
+import { ProductUpdateComponent } from './product/update/product-update.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
+    AboutComponent,
+    //Car
     CarComponent,
     CarDetailsComponent,
     CarCreateComponent,
     CarUpdateComponent,
     CarDeleteComponent,
-    AboutComponent
+    //Product
+    ProductComponent,
+    ProductCreateComponent,
+    ProductDeleteComponent,
+    ProductUpdateComponent,
+    ProductDetailsComponent,
   ],
   imports: [
     BrowserModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
@@ -43,4 +55,3 @@ export class AppModule {
     console.log('AppModule loaded.');
   }
 }
-

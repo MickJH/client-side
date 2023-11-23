@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { FuelType, TransmissionType } from './car';
 
 export interface CarDTO {

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 import { UserDTO } from '../user/user.dto';
 import { UserService } from '../user/user.service';
@@ -6,12 +14,11 @@ import { JwtPayload } from 'jsonwebtoken';
 import { CarService } from '../car/car.service';
 import { CarDTO } from '../car/car.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from '../user/user';
 
 @Controller('car')
 export class CarController {
-  constructor(
-    private carService: CarService,
-  ) {}
+  constructor(private carService: CarService) {}
   @Post('create-car')
   @UseGuards(JwtAuthGuard)
   async createCar(@Body() carDTO: CarDTO) {
@@ -20,14 +27,14 @@ export class CarController {
   }
 
   @Get('all-cars')
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   async getAllCars() {
     const cars = await this.carService.getAll();
     return cars;
   }
 
   @Get('id/:id')
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   async getCarById(@Param('id') id: string) {
     const car = await this.carService.findById(id);
     return car;
@@ -35,20 +42,21 @@ export class CarController {
 
   @Get('my-cars')
   @UseGuards(JwtAuthGuard)
-  async getMyCars(@Body() user: JwtPayload) {
-    const cars = await this.carService.getMyCars(user._id);
+  async getMyCars(@Req() req) {
+    const userEmail = req.user.email;
+    const cars = await this.carService.getMyCars(userEmail);
     return cars;
   }
 
   @Post('update-car/:id')
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   async updateCar(@Param('id') id: string, @Body() carDTO: CarDTO) {
     const updatedCar = await this.carService.update(id, carDTO);
     return updatedCar;
   }
 
   @Post('delete-car/:id')
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   async deleteCar(@Param('id') id: string) {
     await this.carService.delete(id);
     return { message: 'Car deleted successfully' };

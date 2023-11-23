@@ -10,19 +10,58 @@ import { CarUpdateComponent } from './car/update/car-update.component';
 import { CarDeleteComponent } from './car/delete/car-delete.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AboutComponent } from './about/about.component';
+import { ProductComponent } from './product/product.component';
+import { ProductCreateComponent } from './product/create/product-create.component';
+import { ProductUpdateComponent } from './product/update/product-update.component';
+import { ProductDeleteComponent } from './product/delete/product-delete.component';
 
 export const appRoutes: Routes = [
-  {path: '', component: AppComponent, canActivate: [AuthGuard] },
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegistrationComponent},
-  {path: 'about', component: AboutComponent},
-  {path: 'car', component: CarComponent, canActivate: [AuthGuard]},
-  {path: 'car/details/:id', component: CarDetailsComponent, canActivate: [AuthGuard]},
-  {path: 'car/create', component: CarCreateComponent, canActivate: [AuthGuard]},
-  {path: 'car/update/:id', component: CarUpdateComponent, canActivate: [AuthGuard]},
-  {path: 'car/delete/:id', component: CarDeleteComponent, canActivate : [AuthGuard]},
-
-
+  { path: '', component: AppComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegistrationComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'car', component: CarComponent, canActivate: [AuthGuard] },
+  {
+    path: 'car/details/:id',
+    component: CarDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'car/create',
+    component: CarCreateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'car/update/:id',
+    component: CarUpdateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'car/delete/:id',
+    component: CarDeleteComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'product', component: ProductComponent, canActivate: [AuthGuard] },
+  {
+    path: 'product/details/:id',
+    component: ProductComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'product/create',
+    component: ProductCreateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'product/update/:id',
+    component: ProductUpdateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'product/delete/:id',
+    component: ProductDeleteComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
