@@ -70,9 +70,9 @@ export class ProductUpdateComponent implements OnInit {
   updateProduct(): void {
     if (this.productForm.valid && this.product) {
       const updatedProduct = { ...this.product, ...this.productForm.value };
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.productService
-        .updateProduct(this.product.id!, updatedProduct)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .updateProduct(this.product._id!, updatedProduct)
         .subscribe(
           () => {
             // Product update successful

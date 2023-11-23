@@ -30,13 +30,13 @@ export class ProductDetailsComponent implements OnInit {
 
   updateProduct(): void {
     if (this.product) {
-      this.router.navigate(['/product/update', this.product.id]);
+      this.router.navigate(['/product/update', this.product._id]);
     }
   }
 
   deleteProduct(): void {
     if (this.product) {
-      this.router.navigate(['/product/delete', this.product.id]);
+      this.router.navigate(['/product/delete', this.product._id]);
     }
   }
 }
