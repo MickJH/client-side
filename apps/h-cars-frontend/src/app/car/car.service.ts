@@ -7,7 +7,7 @@ import { Car } from './car.model';
   providedIn: 'root',
 })
 export class CarService {
-  private apiUrl = 'https://h-cars-backend.azurewebsites.net/api'; 
+  private apiUrl = 'http://localhost:3000/api'; 
 
   constructor(private http: HttpClient) {}
 

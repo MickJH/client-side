@@ -5,8 +5,7 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "start": "nx serve h-cars-frontend",
-    "startBackend": "nx serve h-cars"
+    "start": "nx serve h-cars-frontend"
   },
   "private": true,
   "dependencies": {
@@ -31,8 +30,6 @@
     "axios": "^1.0.0",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.2",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.4",
