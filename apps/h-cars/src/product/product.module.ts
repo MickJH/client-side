@@ -17,4 +17,4 @@ import { ProductSchema } from '../models/product.schema';
   controllers: [AuthController],
   exports: [ProductService],
 })
-export class CarModule {}
+export class ProductModule {}

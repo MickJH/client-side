@@ -34,11 +34,13 @@ const app_service_1 = __webpack_require__(7);
 const config_1 = __webpack_require__(8);
 const user_module_1 = __webpack_require__(9);
 const car_module_1 = __webpack_require__(23);
+const product_module_1 = __webpack_require__(32);
 const car_controller_1 = __webpack_require__(26);
 const jwt_1 = __webpack_require__(21);
 const jwt_auth_guard_1 = __webpack_require__(20);
 const auth_controller_1 = __webpack_require__(15);
 const auth_service_1 = __webpack_require__(17);
+const product_controller_1 = __webpack_require__(28);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -48,8 +50,14 @@ exports.AppModule = AppModule = tslib_1.__decorate([
             mongoose_module_1.MongooseModule.forRoot(process.env.MONGO_URI),
             user_module_1.UserModule,
             car_module_1.CarModule,
+            product_module_1.ProductModule,
         ],
-        controllers: [app_controller_1.AppController, auth_controller_1.AuthController, car_controller_1.CarController],
+        controllers: [
+            app_controller_1.AppController,
+            auth_controller_1.AuthController,
+            car_controller_1.CarController,
+            product_controller_1.ProductController,
+        ],
         providers: [app_service_1.AppService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard, auth_service_1.AuthService],
     })
 ], AppModule);
@@ -674,9 +682,217 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 /* 28 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a, _b, _c;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductController = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const jwt_auth_guard_1 = __webpack_require__(20);
+const product_service_1 = __webpack_require__(29);
+const product_dto_1 = __webpack_require__(30);
+let ProductController = exports.ProductController = class ProductController {
+    constructor(productService) {
+        this.productService = productService;
+    }
+    async createProduct(productDTO) {
+        const product = await this.productService.create(productDTO);
+        return product;
+    }
+    async getAllProducts() {
+        const products = await this.productService.getAll();
+        return products;
+    }
+    async getCarByProduct(id) {
+        const product = await this.productService.findById(id);
+        return product;
+    }
+    async getMyCars(req) {
+        const userEmail = req.user.email;
+        const products = await this.productService.getMyProducts(userEmail);
+        return products;
+    }
+    async updateProduct(id, productDTO) {
+        const updatedProduct = await this.productService.update(id, productDTO);
+        return updatedProduct;
+    }
+    async deleteProduct(id) {
+        await this.productService.delete(id);
+        return { message: 'Product deleted successfully' };
+    }
+};
+tslib_1.__decorate([
+    (0, common_1.Post)('create-product'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__param(0, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof product_dto_1.ProductDTO !== "undefined" && product_dto_1.ProductDTO) === "function" ? _b : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "createProduct", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('all-products'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", []),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "getAllProducts", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('id/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "getCarByProduct", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('my-products'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__param(0, (0, common_1.Req)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "getMyCars", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('update-product/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, typeof (_c = typeof product_dto_1.ProductDTO !== "undefined" && product_dto_1.ProductDTO) === "function" ? _c : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "updateProduct", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('delete-product/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], ProductController.prototype, "deleteProduct", null);
+exports.ProductController = ProductController = tslib_1.__decorate([
+    (0, common_1.Controller)('product'),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof product_service_1.ProductService !== "undefined" && product_service_1.ProductService) === "function" ? _a : Object])
+], ProductController);
+
+
+/***/ }),
+/* 29 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductService = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const mongoose_2 = __webpack_require__(12);
+let ProductService = exports.ProductService = class ProductService {
+    constructor(productModel) {
+        this.productModel = productModel;
+    }
+    async create(productDTO) {
+        const createdProduct = new this.productModel(productDTO);
+        await createdProduct.save();
+        return createdProduct;
+    }
+    async getMyProducts(userEmail) {
+        return this.productModel.find({ userEmail }).exec();
+    }
+    async getAll() {
+        return this.productModel.find().exec();
+    }
+    async findById(id) {
+        return this.productModel.findById(id).exec();
+    }
+    async update(id, productDTO) {
+        return this.productModel
+            .findByIdAndUpdate(id, productDTO, { new: true })
+            .exec();
+    }
+    async delete(id) {
+        return this.productModel.findByIdAndDelete(id).exec();
+    }
+};
+exports.ProductService = ProductService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)('Product')),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _a : Object])
+], ProductService);
+
+
+/***/ }),
+/* 30 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+/* 31 */
 /***/ ((module) => {
 
 module.exports = require("passport");
+
+/***/ }),
+/* 32 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const product_service_1 = __webpack_require__(29);
+const auth_service_1 = __webpack_require__(17);
+const auth_controller_1 = __webpack_require__(15);
+const user_module_1 = __webpack_require__(9);
+const jwt_1 = __webpack_require__(21);
+const jwt_auth_guard_1 = __webpack_require__(20);
+const product_schema_1 = __webpack_require__(33);
+let ProductModule = exports.ProductModule = class ProductModule {
+};
+exports.ProductModule = ProductModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema }]),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+        ],
+        providers: [product_service_1.ProductService, auth_service_1.AuthService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard],
+        controllers: [auth_controller_1.AuthController],
+        exports: [product_service_1.ProductService],
+    })
+], ProductModule);
+
+
+/***/ }),
+/* 33 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductSchema = void 0;
+const tslib_1 = __webpack_require__(1);
+const mongoose = tslib_1.__importStar(__webpack_require__(12));
+exports.ProductSchema = new mongoose.Schema({
+    productName: { type: String, required: true },
+    price: { type: Number, required: true },
+    description: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    category: {
+        type: String,
+        enum: ['Electronic, Liquid, Wheels, Tools, Car Accessoires, Other'],
+        required: true,
+    },
+    brand: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+});
+
 
 /***/ })
 /******/ 	]);
@@ -716,7 +932,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(28));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(31));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
