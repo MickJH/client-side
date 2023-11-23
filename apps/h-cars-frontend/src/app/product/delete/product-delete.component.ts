@@ -45,7 +45,8 @@ export class ProductDeleteComponent implements OnInit {
 
   deleteProduct(): void {
     if (this.isProductOwner && this.product) {
-      this.productService.deleteProduct(this.product.id!).subscribe(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.productService.deleteProduct(this.product._id!).subscribe(
         () => {
           // Product delete successful
           this.router.navigate(['/product']);
