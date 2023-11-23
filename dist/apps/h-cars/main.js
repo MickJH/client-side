@@ -34,13 +34,13 @@ const app_service_1 = __webpack_require__(7);
 const config_1 = __webpack_require__(8);
 const user_module_1 = __webpack_require__(9);
 const car_module_1 = __webpack_require__(23);
-const product_module_1 = __webpack_require__(32);
 const car_controller_1 = __webpack_require__(26);
 const jwt_1 = __webpack_require__(21);
 const jwt_auth_guard_1 = __webpack_require__(20);
 const auth_controller_1 = __webpack_require__(15);
 const auth_service_1 = __webpack_require__(17);
 const product_controller_1 = __webpack_require__(28);
+const product_module_1 = __webpack_require__(31);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -833,12 +833,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 /* 31 */
-/***/ ((module) => {
-
-module.exports = require("passport");
-
-/***/ }),
-/* 32 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -853,7 +847,7 @@ const auth_controller_1 = __webpack_require__(15);
 const user_module_1 = __webpack_require__(9);
 const jwt_1 = __webpack_require__(21);
 const jwt_auth_guard_1 = __webpack_require__(20);
-const product_schema_1 = __webpack_require__(33);
+const product_schema_1 = __webpack_require__(32);
 let ProductModule = exports.ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule = tslib_1.__decorate([
@@ -870,7 +864,7 @@ exports.ProductModule = ProductModule = tslib_1.__decorate([
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -886,13 +880,26 @@ exports.ProductSchema = new mongoose.Schema({
     imageUrl: { type: String, required: true },
     category: {
         type: String,
-        enum: ['Electronic, Liquid, Wheels, Tools, Car Accessoires, Other'],
+        enum: [
+            'Electronic',
+            'Liquid',
+            'Wheels',
+            'Tools',
+            'Car Accessoires',
+            'Other',
+        ],
         required: true,
     },
     brand: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
 
+
+/***/ }),
+/* 33 */
+/***/ ((module) => {
+
+module.exports = require("passport");
 
 /***/ })
 /******/ 	]);
@@ -932,7 +939,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(31));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(33));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();

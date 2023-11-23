@@ -8,7 +8,14 @@ export const ProductSchema = new mongoose.Schema({
   imageUrl: { type: String, required: true },
   category: {
     type: String,
-    enum: ['Electronic, Liquid, Wheels, Tools, Car Accessoires, Other'],
+    enum: [
+      'Electronic',
+      'Liquid',
+      'Wheels',
+      'Tools',
+      'Car Accessoires',
+      'Other',
+    ],
     required: true,
   },
   brand: { type: String, required: true },
