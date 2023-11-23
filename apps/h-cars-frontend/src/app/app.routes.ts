@@ -14,6 +14,7 @@ import { ProductComponent } from './product/product.component';
 import { ProductCreateComponent } from './product/create/product-create.component';
 import { ProductUpdateComponent } from './product/update/product-update.component';
 import { ProductDeleteComponent } from './product/delete/product-delete.component';
+import { ProductDetailsComponent } from './product/details/product-details.component';
 
 export const appRoutes: Routes = [
   { path: '', component: AppComponent, canActivate: [AuthGuard] },
@@ -44,7 +45,7 @@ export const appRoutes: Routes = [
   { path: 'product', component: ProductComponent, canActivate: [AuthGuard] },
   {
     path: 'product/details/:id',
-    component: ProductComponent,
+    component: ProductDetailsComponent,
     canActivate: [AuthGuard],
   },
   {
