@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
+  public apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
   currentUser: any;
 
   constructor(private http: HttpClient) {}
