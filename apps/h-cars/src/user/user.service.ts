@@ -6,10 +6,16 @@ import { UserDTO } from './user.dto';
 import { LoginDTO } from '../auth/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken';
+import { CarService } from '../car/car.service';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+    private carService: CarService,
+    private productService: ProductService
+  ) {}
 
   async create(UserDTO: UserDTO) {
     const email = UserDTO.email;
@@ -83,7 +89,7 @@ export class UserService {
 
     await user.save();
 
-    return 'You are now following this user: ${followingUser}';
+    return 'You are now following this user: ' + followingUser;
   }
 
   async getFollowers(userEmail: string) {
@@ -91,5 +97,79 @@ export class UserService {
       .find({ following: userEmail })
       .populate('follower')
       .exec();
+  }
+
+  async likeCar(userEmail: string, carId: string) {
+    if (!userEmail || !carId) {
+      throw new HttpException('missing parameters', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.findByEmail(userEmail);
+
+    if (!user) {
+      throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
+    }
+
+    const car = await this.carService.findById(carId);
+
+    if (!car) {
+      throw new HttpException('car not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isAlreadyLiked = user.likedCars.some(
+      (likedCar) => likedCar.carId === carId
+    );
+
+    if (isAlreadyLiked) {
+      throw new HttpException(
+        'You have already liked this car',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    user.likedCars.push({
+      carId: carId,
+      createdAt: new Date(),
+    });
+
+    await user.save();
+    return 'You have liked this car: ' + carId;
+  }
+
+  async likeProduct(userEmail: string, productId: string) {
+    if (!userEmail || !productId) {
+      throw new HttpException('missing parameters', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.findByEmail(userEmail);
+
+    if (!user) {
+      throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
+    }
+
+    const product = await this.productService.findById(productId);
+
+    if (!product) {
+      throw new HttpException('product not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isAlreadyLiked = user.likedProducts.some(
+      (likedProduct) => likedProduct.productId === productId
+    );
+
+    if (isAlreadyLiked) {
+      throw new HttpException(
+        'You have already liked this product',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    user.likedProducts.push({
+      productId: productId,
+      createdAt: new Date(),
+    });
+
+    await user.save();
+    return 'You have liked this product:' + productId;
   }
 }

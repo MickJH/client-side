@@ -6,11 +6,13 @@ import { AuthController } from '../auth/auth.controller';
 import { AuthService } from '../auth/auth.service';
 import { CarModule } from '../car/car.module';
 import { JwtService } from '@nestjs/jwt';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-    forwardRef(() => CarModule),
+    ProductModule,
+    CarModule,
   ],
   providers: [UserService, AuthService, JwtService],
   controllers: [AuthController],

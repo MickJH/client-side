@@ -12,4 +12,16 @@ export interface User extends Document {
       createdAt: Date;
     }
   ];
+  likedCars: [
+    {
+      carId: string;
+      createdAt: Date;
+    }
+  ];
+  likedProducts: [
+    {
+      productId: string;
+      createdAt: Date;
+    }
+  ];
 }

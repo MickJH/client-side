@@ -10,4 +10,16 @@ export interface UserDTO {
       createdAt: Date;
     }
   ];
+  likedCars: [
+    {
+      carId: string;
+      createdAt: Date;
+    }
+  ];
+  likedProducts: [
+    {
+      productId: string;
+      createdAt: Date;
+    }
+  ];
 }

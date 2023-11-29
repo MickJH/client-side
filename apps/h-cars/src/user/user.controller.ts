@@ -14,4 +14,20 @@ export class UserController {
 
     return this.userService.follow(userEmail, followingUser);
   }
+
+  @Post('like-car')
+  async likeCar(@Request() req, @Body() body: { carId: string }) {
+    const userEmail = req.user.email;
+    const { carId } = body;
+
+    return this.userService.likeCar(userEmail, carId);
+  }
+
+  @Post('like-product')
+  async likeProduct(@Request() req, @Body() body: { productId: string }) {
+    const userEmail = req.user.email;
+    const { productId } = body;
+
+    return this.userService.likeProduct(userEmail, productId);
+  }
 }

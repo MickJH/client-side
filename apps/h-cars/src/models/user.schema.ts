@@ -14,6 +14,26 @@ export const UserSchema = new mongoose.Schema({
       createdAt: { type: Date, default: Date.now },
     },
   ],
+  likedCars: [
+    {
+      carId: {
+        type: String,
+        ref: 'Car',
+        required: true,
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  likedProducts: [
+    {
+      productId: {
+        type: String,
+        ref: 'Product',
+        required: true,
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 UserSchema.pre('save', async function (next: NextFunction) {
