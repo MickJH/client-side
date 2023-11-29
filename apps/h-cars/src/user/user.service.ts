@@ -28,7 +28,7 @@ export class UserService {
     const { email, password } = LoginDTO;
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      throw new HttpException('user doesnt exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
     }
     if (await bcrypt.compare(password, user.password)) {
       return this.removePassword(user);
@@ -47,6 +47,49 @@ export class UserService {
   }
 
   async validatePayload(payload: JwtPayload) {
-   return payload;
+    return payload;
+  }
+
+  async follow(userEmail: string, followingUser: string) {
+    if (!userEmail || !followingUser) {
+      throw new HttpException('missing parameters', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.findByEmail(userEmail);
+
+    if (!user) {
+      throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
+    }
+
+    if (userEmail === followingUser) {
+      throw new HttpException('cannot follow yourself', HttpStatus.BAD_REQUEST);
+    }
+
+    const isAlreadyFollowing = user.following.some(
+      (follow) => follow.followingUser === followingUser
+    );
+
+    if (isAlreadyFollowing) {
+      throw new HttpException(
+        'You are already following this user',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    user.following.push({
+      followingUser: followingUser,
+      createdAt: new Date(),
+    });
+
+    await user.save();
+
+    return 'You are now following this user: ${followingUser}';
+  }
+
+  async getFollowers(userEmail: string) {
+    return this.userModel
+      .find({ following: userEmail })
+      .populate('follower')
+      .exec();
   }
 }

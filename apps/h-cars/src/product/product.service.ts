@@ -3,14 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './product';
 import { ProductDTO } from './product.dto';
-import { LikeService } from '../like/like.service';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectModel('Product') private productModel: Model<Product>,
-    private likeService: LikeService
-  ) {}
+  constructor(@InjectModel('Product') private productModel: Model<Product>) {}
 
   async create(productDTO: ProductDTO) {
     const createdProduct = new this.productModel(productDTO);
@@ -39,13 +35,5 @@ export class ProductService {
 
   async delete(id: string) {
     return this.productModel.findByIdAndDelete(id).exec();
-  }
-
-  async likeProduct(userId: string, productId: string) {
-    return this.likeService.likeProduct(userId, productId);
-  }
-
-  async getLikedProducts(userId: string) {
-    return this.likeService.getLikedProducts(userId);
   }
 }

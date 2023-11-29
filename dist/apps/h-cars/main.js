@@ -41,6 +41,7 @@ const auth_controller_1 = __webpack_require__(15);
 const auth_service_1 = __webpack_require__(17);
 const product_controller_1 = __webpack_require__(28);
 const product_module_1 = __webpack_require__(31);
+const user_controller_1 = __webpack_require__(33);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -57,6 +58,7 @@ exports.AppModule = AppModule = tslib_1.__decorate([
             auth_controller_1.AuthController,
             car_controller_1.CarController,
             product_controller_1.ProductController,
+            user_controller_1.UserController,
         ],
         providers: [app_service_1.AppService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard, auth_service_1.AuthService],
     })
@@ -187,7 +189,7 @@ let UserService = exports.UserService = class UserService {
         const { email, password } = LoginDTO;
         const user = await this.userModel.findOne({ email });
         if (!user) {
-            throw new common_1.HttpException('user doesnt exist', common_1.HttpStatus.BAD_REQUEST);
+            throw new common_1.HttpException('user doesnt exist', common_1.HttpStatus.NOT_FOUND);
         }
         if (await bcrypt.compare(password, user.password)) {
             return this.removePassword(user);
@@ -206,6 +208,34 @@ let UserService = exports.UserService = class UserService {
     }
     async validatePayload(payload) {
         return payload;
+    }
+    async follow(userEmail, followingUser) {
+        if (!userEmail || !followingUser) {
+            throw new common_1.HttpException('missing parameters', common_1.HttpStatus.BAD_REQUEST);
+        }
+        const user = await this.findByEmail(userEmail);
+        if (!user) {
+            throw new common_1.HttpException('user doesnt exist', common_1.HttpStatus.NOT_FOUND);
+        }
+        if (userEmail === followingUser) {
+            throw new common_1.HttpException('cannot follow yourself', common_1.HttpStatus.BAD_REQUEST);
+        }
+        const isAlreadyFollowing = user.following.some((follow) => follow.followingUser === followingUser);
+        if (isAlreadyFollowing) {
+            throw new common_1.HttpException('You are already following this user', common_1.HttpStatus.BAD_REQUEST);
+        }
+        user.following.push({
+            followingUser: followingUser,
+            createdAt: new Date(),
+        });
+        await user.save();
+        return 'You are now following this user: ${followingUser}';
+    }
+    async getFollowers(userEmail) {
+        return this.userModel
+            .find({ following: userEmail })
+            .populate('follower')
+            .exec();
     }
 };
 exports.UserService = UserService = tslib_1.__decorate([
@@ -248,7 +278,13 @@ exports.UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     age: { type: Number, required: true },
     firstName: { type: String, required: true },
-    lastName: { type: String, required: true }
+    lastName: { type: String, required: true },
+    following: [
+        {
+            followingUser: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now },
+        },
+    ],
 });
 exports.UserSchema.pre('save', async function (next) {
     try {
@@ -564,14 +600,23 @@ const mongoose = tslib_1.__importStar(__webpack_require__(12));
 exports.CarSchema = new mongoose.Schema({
     carModel: { type: String, required: true },
     counter: { type: Number, required: true },
-    typeOfFuel: { type: String, enum: ['Petrol', 'Diesel', 'Electric'], required: true },
-    transmissionType: { type: String, enum: ['Automatic', 'Manual'], required: true },
+    typeOfFuel: {
+        type: String,
+        enum: ['Petrol', 'Diesel', 'Electric'],
+        required: true,
+    },
+    transmissionType: {
+        type: String,
+        enum: ['Automatic', 'Manual'],
+        required: true,
+    },
     apk: { type: Boolean, required: true },
     apkExpires: { type: Date },
     numberPlate: { type: String, unique: true, required: true },
     constructionYear: { type: Number, required: true },
     userEmail: { type: String, required: true },
     imageUrl: { type: String, required: true },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
 });
 
 
@@ -892,11 +937,49 @@ exports.ProductSchema = new mongoose.Schema({
     },
     brand: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
 });
 
 
 /***/ }),
 /* 33 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserController = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const user_service_1 = __webpack_require__(10);
+const jwt_auth_guard_1 = __webpack_require__(20);
+let UserController = exports.UserController = class UserController {
+    constructor(userService) {
+        this.userService = userService;
+    }
+    async follow(req, body) {
+        const userEmail = req.user.email;
+        const { followingUser } = body;
+        return this.userService.follow(userEmail, followingUser);
+    }
+};
+tslib_1.__decorate([
+    (0, common_1.Post)('follow'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object, Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "follow", null);
+exports.UserController = UserController = tslib_1.__decorate([
+    (0, common_1.Controller)('user'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object])
+], UserController);
+
+
+/***/ }),
+/* 34 */
 /***/ ((module) => {
 
 module.exports = require("passport");
@@ -939,7 +1022,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(33));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(34));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();

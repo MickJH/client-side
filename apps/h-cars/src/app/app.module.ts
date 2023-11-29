@@ -13,8 +13,7 @@ import { AuthController } from '../auth/auth.controller';
 import { AuthService } from '../auth/auth.service';
 import { ProductController } from '../product/product.controller';
 import { ProductModule } from '../product/product.module';
-import { FollowModule } from '../follow/follow.module';
-import { LikeModule } from '../like/like.module';
+import { UserController } from '../user/user.controller';
 
 @Module({
   imports: [
@@ -23,14 +22,13 @@ import { LikeModule } from '../like/like.module';
     UserModule,
     CarModule,
     ProductModule,
-    FollowModule,
-    LikeModule,
   ],
   controllers: [
     AppController,
     AuthController,
     CarController,
     ProductController,
+    UserController,
   ],
   providers: [AppService, JwtService, JwtAuthGuard, AuthService],
 })
