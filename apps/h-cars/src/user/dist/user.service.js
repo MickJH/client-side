@@ -159,16 +159,6 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.getFollowers = function (userEmail) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.userModel
-                        .find({ following: userEmail })
-                        .populate('follower')
-                        .exec()];
-            });
-        });
-    };
     UserService.prototype.likeCar = function (userEmail, carId) {
         return __awaiter(this, void 0, void 0, function () {
             var user, car, isAlreadyLiked;

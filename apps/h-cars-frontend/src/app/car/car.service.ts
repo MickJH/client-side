@@ -7,7 +7,7 @@ import { Car } from './car.model';
   providedIn: 'root',
 })
 export class CarService {
-  private apiUrl = 'https://h-cars-backend.azurewebsites.net/api'; 
+  private apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
 
   constructor(private http: HttpClient) {}
 
@@ -31,21 +31,43 @@ export class CarService {
 
   createCar(car: Car): Observable<Car> {
     const headers = this.getHeaders();
-    return this.http.post<Car>(`${this.apiUrl}/car/create-car`, car, { headers });
+    return this.http.post<Car>(`${this.apiUrl}/car/create-car`, car, {
+      headers,
+    });
   }
 
   updateCar(id: string, car: Car): Observable<Car> {
     const headers = this.getHeaders();
-    return this.http.post<Car>(`${this.apiUrl}/car/update-car/${id}`, car, { headers });
+    return this.http.post<Car>(`${this.apiUrl}/car/update-car/${id}`, car, {
+      headers,
+    });
   }
 
   deleteCar(id: string): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post<any>(`${this.apiUrl}/car/delete-car/${id}`, {}, { headers });
+    return this.http.post<any>(
+      `${this.apiUrl}/car/delete-car/${id}`,
+      {},
+      { headers }
+    );
   }
 
-   getUserCars(): Observable<Car[]> {
+  getUserCars(): Observable<Car[]> {
     const headers = this.getHeaders();
     return this.http.get<Car[]>(`${this.apiUrl}/car/my-cars`, { headers });
+  }
+
+  likeCar(id: string): Observable<Car> {
+    const headers = this.getHeaders();
+    return this.http.post<Car>(
+      `${this.apiUrl}/user/like-car`,
+      { id },
+      { headers }
+    );
+  }
+
+  getLikedCars(): Observable<Car[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Car[]>(`${this.apiUrl}/user/liked-cars`, { headers });
   }
 }

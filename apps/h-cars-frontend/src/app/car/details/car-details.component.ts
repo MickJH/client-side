@@ -12,7 +12,11 @@ import { CarService } from '../car.service';
 export class CarDetailsComponent implements OnInit {
   car: Car | null = null;
 
-  constructor(private carService: CarService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private carService: CarService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -35,5 +39,12 @@ export class CarDetailsComponent implements OnInit {
     if (this.car) {
       this.router.navigate(['/car/delete', this.car._id]);
     }
+  }
+
+  toggleLike(): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.carService.likeCar(this.car!._id!).subscribe((updatedCar) => {
+      this.car = updatedCar;
+    });
   }
 }

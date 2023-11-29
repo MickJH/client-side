@@ -92,13 +92,6 @@ export class UserService {
     return 'You are now following this user: ' + followingUser;
   }
 
-  async getFollowers(userEmail: string) {
-    return this.userModel
-      .find({ following: userEmail })
-      .populate('follower')
-      .exec();
-  }
-
   async likeCar(userEmail: string, carId: string) {
     if (!userEmail || !carId) {
       throw new HttpException('missing parameters', HttpStatus.BAD_REQUEST);

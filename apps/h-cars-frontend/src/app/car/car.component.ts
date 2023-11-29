@@ -12,7 +12,7 @@ export class CarComponent implements OnInit {
   cars: Car[] = [];
   myCars: Car[] = [];
   selectedCar: Car | null = null;
-  activeTab: 'allCars' | 'myCars' = 'allCars';
+  activeTab: 'allCars' | 'myCars' | 'likedCars' = 'allCars';
 
   constructor(private carService: CarService) {}
 
@@ -39,6 +39,23 @@ export class CarComponent implements OnInit {
   loadMyCars(): void {
     this.carService.getUserCars().subscribe((myCars) => {
       this.myCars = myCars;
+    });
+  }
+
+  likeCar(id: string): void {
+    this.carService.likeCar(id).subscribe(() => {
+      // Toggle the liked status
+      const car = this.cars.find((c) => c._id === id);
+      if (car) {
+        car.liked = !car.liked;
+      }
+    });
+  }
+
+  showLikedCars(): void {
+    this.carService.getLikedCars().subscribe((cars) => {
+      this.activeTab = 'likedCars';
+      this.cars = cars;
     });
   }
 }

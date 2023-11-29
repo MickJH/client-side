@@ -59,6 +59,9 @@
         <div class="col-md-12 text-center">
           <a class="btn btn-warning" (click)="updateCar()"> Update car </a>
           <a class="btn btn-danger" (click)="deleteCar()"> Delete car </a>
+          <button (click)="toggleLike()" class="btn btn-primary">
+            {{ car.liked ? 'Unlike' : 'Like' }}
+          </button>
         </div>
       </div>
     </div>

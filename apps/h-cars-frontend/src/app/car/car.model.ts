@@ -10,4 +10,5 @@ export interface Car {
   constructionYear: number;
   imageUrl: string;
   userEmail: string;
+  liked?: boolean;
 }
