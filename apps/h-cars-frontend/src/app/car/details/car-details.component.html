@@ -57,9 +57,17 @@
     <div class="container mt-5">
       <div class="row mb-3">
         <div class="col-md-12 text-center">
+<<<<<<< HEAD
           <a class="btn btn-warning mr-2" (click)="updateCar()">Update car</a>
           <a class="btn btn-danger mr-2" (click)="deleteCar()">Delete car</a>
           <a class="btn btn-info" (click)="likeCar(car?._id!)">Like car</a>
+=======
+          <a class="btn btn-warning" (click)="updateCar()"> Update car </a>
+          <a class="btn btn-danger" (click)="deleteCar()"> Delete car </a>
+          <button (click)="toggleLike()" class="btn btn-primary">
+            {{ car.liked ? 'Unlike' : 'Like' }}
+          </button>
+>>>>>>> 5c0351251115102ba2b39c0f09d7a99a2c660da6
         </div>
       </div>
     </div>
