@@ -13,7 +13,14 @@
         [class.active]="activeTab === 'myCars'"
         (click)="showMyCars()"
       >
-        My cars
+        My Cars
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'likedCars'"
+        (click)="showLikedCars()"
+      >
+        Liked Cars
       </button>
     </div>
 

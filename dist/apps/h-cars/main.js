@@ -34,13 +34,13 @@ const app_service_1 = __webpack_require__(7);
 const config_1 = __webpack_require__(8);
 const user_module_1 = __webpack_require__(9);
 const car_module_1 = __webpack_require__(25);
-const car_controller_1 = __webpack_require__(27);
+const car_controller_1 = __webpack_require__(29);
 const jwt_1 = __webpack_require__(23);
 const jwt_auth_guard_1 = __webpack_require__(22);
 const auth_controller_1 = __webpack_require__(17);
 const auth_service_1 = __webpack_require__(19);
-const product_controller_1 = __webpack_require__(29);
-const product_module_1 = __webpack_require__(31);
+const product_controller_1 = __webpack_require__(31);
+const product_module_1 = __webpack_require__(27);
 const user_controller_1 = __webpack_require__(33);
 let AppModule = exports.AppModule = class AppModule {
 };
@@ -143,7 +143,7 @@ const auth_controller_1 = __webpack_require__(17);
 const auth_service_1 = __webpack_require__(19);
 const car_module_1 = __webpack_require__(25);
 const jwt_1 = __webpack_require__(23);
-const product_module_1 = __webpack_require__(31);
+const product_module_1 = __webpack_require__(27);
 let UserModule = exports.UserModule = class UserModule {
 };
 exports.UserModule = UserModule = tslib_1.__decorate([
@@ -237,12 +237,6 @@ let UserService = exports.UserService = class UserService {
         await user.save();
         return 'You are now following this user: ' + followingUser;
     }
-    async getFollowers(userEmail) {
-        return this.userModel
-            .find({ following: userEmail })
-            .populate('follower')
-            .exec();
-    }
     async likeCar(userEmail, carId) {
         if (!userEmail || !carId) {
             throw new common_1.HttpException('missing parameters', common_1.HttpStatus.BAD_REQUEST);
@@ -264,7 +258,6 @@ let UserService = exports.UserService = class UserService {
             createdAt: new Date(),
         });
         await user.save();
-        return 'You have liked this car: ' + carId;
     }
     async likeProduct(userEmail, productId) {
         if (!userEmail || !productId) {
@@ -287,7 +280,6 @@ let UserService = exports.UserService = class UserService {
             createdAt: new Date(),
         });
         await user.save();
-        return 'You have liked this product:' + productId;
     }
 };
 exports.UserService = UserService = tslib_1.__decorate([
@@ -743,13 +735,78 @@ exports.CarSchema = new mongoose.Schema({
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const product_service_1 = __webpack_require__(15);
+const auth_service_1 = __webpack_require__(19);
+const auth_controller_1 = __webpack_require__(17);
+const user_module_1 = __webpack_require__(9);
+const jwt_1 = __webpack_require__(23);
+const jwt_auth_guard_1 = __webpack_require__(22);
+const product_schema_1 = __webpack_require__(28);
+let ProductModule = exports.ProductModule = class ProductModule {
+};
+exports.ProductModule = ProductModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema }]),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+        ],
+        providers: [product_service_1.ProductService, auth_service_1.AuthService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard],
+        controllers: [auth_controller_1.AuthController],
+        exports: [product_service_1.ProductService],
+    })
+], ProductModule);
+
+
+/***/ }),
+/* 28 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductSchema = void 0;
+const tslib_1 = __webpack_require__(1);
+const mongoose = tslib_1.__importStar(__webpack_require__(12));
+exports.ProductSchema = new mongoose.Schema({
+    productName: { type: String, required: true },
+    price: { type: Number, required: true },
+    description: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    category: {
+        type: String,
+        enum: [
+            'Electronic',
+            'Liquid',
+            'Wheels',
+            'Tools',
+            'Car Accessoires',
+            'Other',
+        ],
+        required: true,
+    },
+    brand: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
+});
+
+
+/***/ }),
+/* 29 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CarController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const car_service_1 = __webpack_require__(14);
-const car_dto_1 = __webpack_require__(28);
+const car_dto_1 = __webpack_require__(30);
 const jwt_auth_guard_1 = __webpack_require__(22);
 let CarController = exports.CarController = class CarController {
     constructor(carService) {
@@ -836,7 +893,7 @@ exports.CarController = CarController = tslib_1.__decorate([
 
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -844,7 +901,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -855,7 +912,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const jwt_auth_guard_1 = __webpack_require__(22);
 const product_service_1 = __webpack_require__(15);
-const product_dto_1 = __webpack_require__(30);
+const product_dto_1 = __webpack_require__(32);
 let ProductController = exports.ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -941,76 +998,11 @@ exports.ProductController = ProductController = tslib_1.__decorate([
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-
-
-/***/ }),
-/* 31 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ProductModule = void 0;
-const tslib_1 = __webpack_require__(1);
-const common_1 = __webpack_require__(2);
-const mongoose_1 = __webpack_require__(11);
-const product_service_1 = __webpack_require__(15);
-const auth_service_1 = __webpack_require__(19);
-const auth_controller_1 = __webpack_require__(17);
-const user_module_1 = __webpack_require__(9);
-const jwt_1 = __webpack_require__(23);
-const jwt_auth_guard_1 = __webpack_require__(22);
-const product_schema_1 = __webpack_require__(32);
-let ProductModule = exports.ProductModule = class ProductModule {
-};
-exports.ProductModule = ProductModule = tslib_1.__decorate([
-    (0, common_1.Module)({
-        imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: 'Product', schema: product_schema_1.ProductSchema }]),
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
-        ],
-        providers: [product_service_1.ProductService, auth_service_1.AuthService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard],
-        controllers: [auth_controller_1.AuthController],
-        exports: [product_service_1.ProductService],
-    })
-], ProductModule);
-
-
-/***/ }),
-/* 32 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ProductSchema = void 0;
-const tslib_1 = __webpack_require__(1);
-const mongoose = tslib_1.__importStar(__webpack_require__(12));
-exports.ProductSchema = new mongoose.Schema({
-    productName: { type: String, required: true },
-    price: { type: Number, required: true },
-    description: { type: String, required: true },
-    userEmail: { type: String, required: true },
-    imageUrl: { type: String, required: true },
-    category: {
-        type: String,
-        enum: [
-            'Electronic',
-            'Liquid',
-            'Wheels',
-            'Tools',
-            'Car Accessoires',
-            'Other',
-        ],
-        required: true,
-    },
-    brand: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
-});
 
 
 /***/ }),
@@ -1037,12 +1029,14 @@ let UserController = exports.UserController = class UserController {
     async likeCar(req, body) {
         const userEmail = req.user.email;
         const { carId } = body;
-        return this.userService.likeCar(userEmail, carId);
+        await this.userService.likeCar(userEmail, carId);
+        return { message: 'Car liked successfully' };
     }
     async likeProduct(req, body) {
         const userEmail = req.user.email;
         const { productId } = body;
-        return this.userService.likeProduct(userEmail, productId);
+        await this.userService.likeProduct(userEmail, productId);
+        return { message: 'Product liked successfully' };
     }
 };
 tslib_1.__decorate([

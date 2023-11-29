@@ -12,7 +12,8 @@ export class CarComponent implements OnInit {
   cars: Car[] = [];
   myCars: Car[] = [];
   selectedCar: Car | null = null;
-  activeTab: 'allCars' | 'myCars' = 'allCars';
+  activeTab: 'allCars' | 'myCars' | 'likedCars' = 'allCars';
+  errorMessage = '';
 
   constructor(private carService: CarService) {}
 
@@ -39,6 +40,13 @@ export class CarComponent implements OnInit {
   loadMyCars(): void {
     this.carService.getUserCars().subscribe((myCars) => {
       this.myCars = myCars;
+    });
+  }
+
+  showLikedCars(): void {
+    this.carService.getLikedCars().subscribe((cars) => {
+      this.activeTab = 'likedCars';
+      this.cars = cars;
     });
   }
 }

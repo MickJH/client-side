@@ -20,7 +20,8 @@ export class UserController {
     const userEmail = req.user.email;
     const { carId } = body;
 
-    return this.userService.likeCar(userEmail, carId);
+    await this.userService.likeCar(userEmail, carId);
+    return { message: 'Car liked successfully' };
   }
 
   @Post('like-product')
@@ -28,6 +29,7 @@ export class UserController {
     const userEmail = req.user.email;
     const { productId } = body;
 
-    return this.userService.likeProduct(userEmail, productId);
+    await this.userService.likeProduct(userEmail, productId);
+    return { message: 'Product liked successfully' };
   }
 }
