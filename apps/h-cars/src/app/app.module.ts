@@ -13,6 +13,8 @@ import { AuthController } from '../auth/auth.controller';
 import { AuthService } from '../auth/auth.service';
 import { ProductController } from '../product/product.controller';
 import { ProductModule } from '../product/product.module';
+import { FollowModule } from '../follow/follow.module';
+import { LikeModule } from '../like/like.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ProductModule } from '../product/product.module';
     UserModule,
     CarModule,
     ProductModule,
+    FollowModule,
+    LikeModule,
   ],
   controllers: [
     AppController,

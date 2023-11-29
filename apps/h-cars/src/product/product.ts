@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 export enum Category {
   Electronic = 'Electronic',
   Liquid = 'Liquid',
@@ -16,4 +18,5 @@ export interface Product extends Document {
   category: Category;
   brand: string;
   createdAt: Date;
+  likes: { type: mongoose.Schema.Types.ObjectId; ref: 'Like' }[];
 }

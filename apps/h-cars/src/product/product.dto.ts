@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Category } from './product';
 
 export interface ProductDTO {
@@ -9,4 +10,5 @@ export interface ProductDTO {
   category: Category;
   brand: string;
   createdAt: Date;
+  likes: { type: mongoose.Schema.Types.ObjectId; ref: 'Like' }[];
 }
