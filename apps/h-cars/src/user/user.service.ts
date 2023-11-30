@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken';
 import { CarService } from '../car/car.service';
 import { ProductService } from '../product/product.service';
+import { Car } from '../car/car';
 
 @Injectable()
 export class UserService {
@@ -162,5 +163,28 @@ export class UserService {
     });
 
     await user.save();
+  }
+
+  async getLikedCars(userEmail: string): Promise<Car[]> {
+    const user = await this.findByEmail(userEmail);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const likedCarIds = user.likedCars.map((likedCar) => likedCar.carId);
+
+    const likedCars = await this.carService.getCarsByIds(likedCarIds);
+
+    return likedCars;
+  }
+
+  getLikedProducts(userEmail: string) {
+    return this.findByEmail(userEmail).then((user) => {
+      if (!user) {
+        throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
+      }
+      return user.likedProducts;
+    });
   }
 }

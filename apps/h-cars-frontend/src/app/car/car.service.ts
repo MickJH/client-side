@@ -61,26 +61,20 @@ export class CarService {
     return this.http.get<Car[]>(`${this.apiUrl}/car/my-cars`, { headers });
   }
 
-<<<<<<< HEAD
   likeCar(carId: string): Observable<Car> {
     const headers = this.getHeaders();
     const body = { carId };
     return this.http.post<Car>(
       `http://localhost:3000/api/user/like-car`,
       body,
-=======
-  likeCar(id: string): Observable<Car> {
-    const headers = this.getHeaders();
-    return this.http.post<Car>(
-      `${this.apiUrl}/user/like-car`,
-      { id },
->>>>>>> 5c0351251115102ba2b39c0f09d7a99a2c660da6
       { headers }
     );
   }
 
   getLikedCars(): Observable<Car[]> {
     const headers = this.getHeaders();
-    return this.http.get<Car[]>(`${this.apiUrl}/user/liked-cars`, { headers });
+    return this.http.get<Car[]>(`http://localhost:3000/api/user/liked-cars`, {
+      headers,
+    });
   }
 }

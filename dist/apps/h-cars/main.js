@@ -281,6 +281,23 @@ let UserService = exports.UserService = class UserService {
         });
         await user.save();
     }
+    async getLikedCars(userEmail) {
+        const user = await this.findByEmail(userEmail);
+        if (!user) {
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        const likedCarIds = user.likedCars.map((likedCar) => likedCar.carId);
+        const likedCars = await this.carService.getCarsByIds(likedCarIds);
+        return likedCars;
+    }
+    getLikedProducts(userEmail) {
+        return this.findByEmail(userEmail).then((user) => {
+            if (!user) {
+                throw new common_1.HttpException('user doesnt exist', common_1.HttpStatus.NOT_FOUND);
+            }
+            return user.likedProducts;
+        });
+    }
 };
 exports.UserService = UserService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
@@ -347,6 +364,9 @@ let CarService = exports.CarService = class CarService {
     }
     async delete(id) {
         return this.carModel.findByIdAndDelete(id).exec();
+    }
+    async getCarsByIds(carIds) {
+        return this.carModel.find({ _id: { $in: carIds } }).exec();
     }
 };
 exports.CarService = CarService = tslib_1.__decorate([
@@ -1038,6 +1058,14 @@ let UserController = exports.UserController = class UserController {
         await this.userService.likeProduct(userEmail, productId);
         return { message: 'Product liked successfully' };
     }
+    async getLikedCars(req) {
+        const userEmail = req.user.email;
+        return this.userService.getLikedCars(userEmail);
+    }
+    async getLikedProducts(req) {
+        const userEmail = req.user.email;
+        return this.userService.getLikedProducts(userEmail);
+    }
 };
 tslib_1.__decorate([
     (0, common_1.Post)('follow'),
@@ -1063,6 +1091,20 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "likeProduct", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('liked-cars'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getLikedCars", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('liked-products'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getLikedProducts", null);
 exports.UserController = UserController = tslib_1.__decorate([
     (0, common_1.Controller)('user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

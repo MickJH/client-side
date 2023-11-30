@@ -41,7 +41,6 @@ export class CarDetailsComponent implements OnInit {
     }
   }
 
-<<<<<<< HEAD
   likeCar(carId: string): void {
     this.carService.likeCar(carId).subscribe(
       () => {
@@ -77,12 +76,5 @@ export class CarDetailsComponent implements OnInit {
 
   private displayErrorMessage(message: string): void {
     this.errorMessage = message;
-=======
-  toggleLike(): void {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.carService.likeCar(this.car!._id!).subscribe((updatedCar) => {
-      this.car = updatedCar;
-    });
->>>>>>> 5c0351251115102ba2b39c0f09d7a99a2c660da6
   }
 }

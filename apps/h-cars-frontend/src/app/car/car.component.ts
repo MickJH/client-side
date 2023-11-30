@@ -11,6 +11,7 @@ import { CarService } from './car.service';
 export class CarComponent implements OnInit {
   cars: Car[] = [];
   myCars: Car[] = [];
+  likedCars: Car[] = [];
   selectedCar: Car | null = null;
   activeTab: 'allCars' | 'myCars' | 'likedCars' = 'allCars';
   errorMessage = '';
@@ -44,9 +45,10 @@ export class CarComponent implements OnInit {
   }
 
   showLikedCars(): void {
-    this.carService.getLikedCars().subscribe((cars) => {
+    this.carService.getLikedCars().subscribe((likedCars) => {
       this.activeTab = 'likedCars';
-      this.cars = cars;
+      this.likedCars = likedCars;
+      console.log(likedCars);
     });
   }
 }

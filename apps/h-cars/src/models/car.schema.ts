@@ -19,5 +19,4 @@ export const CarSchema = new mongoose.Schema({
   constructionYear: { type: Number, required: true },
   userEmail: { type: String, required: true },
   imageUrl: { type: String, required: true },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
 });
