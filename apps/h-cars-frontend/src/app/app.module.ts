@@ -19,6 +19,8 @@ import { ProductCreateComponent } from './product/create/product-create.componen
 import { ProductDeleteComponent } from './product/delete/product-delete.component';
 import { ProductDetailsComponent } from './product/details/product-details.component';
 import { ProductUpdateComponent } from './product/update/product-update.component';
+import { UserListComponent } from './user/user-list/user-list.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,9 @@ import { ProductUpdateComponent } from './product/update/product-update.componen
     ProductDeleteComponent,
     ProductUpdateComponent,
     ProductDetailsComponent,
+    //User
+    UserListComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,

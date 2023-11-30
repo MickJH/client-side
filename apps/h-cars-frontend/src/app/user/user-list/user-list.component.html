@@ -1,0 +1,23 @@
+<div class="user-list-container">
+  <div class="user-list-box">
+    <a class="btn btn-primary" [routerLink]="['/user/profile']"
+      >Back to profile</a
+    >
+    <h2>All Users</h2>
+
+    <div class="user-list">
+      <div class="user-card" *ngFor="let user of users">
+        <div class="user-info">
+          <h5>{{ user?.email }}</h5>
+          <p>First Name: {{ user?.firstName }}</p>
+          <p>Last Name: {{ user?.lastName }}</p>
+          <p>Age: {{ user?.age }}</p>
+          <button class="follow-button" (click)="followUser(user?.email!)">
+            Follow
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+</div>

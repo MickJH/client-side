@@ -7,7 +7,7 @@ import { AuthService } from '../../auth/auth.service';
 @Component({
   selector: 'client-side-car-create',
   templateUrl: './car-create.component.html',
-  styleUrls: ['./car-create.component.css']
+  styleUrls: ['./car-create.component.css'],
 })
 export class CarCreateComponent {
   carForm: FormGroup;
@@ -19,7 +19,7 @@ export class CarCreateComponent {
     private router: Router
   ) {
     this.carForm = this.formBuilder.group({
-      userEmail: ['', Validators.required], 
+      userEmail: ['', Validators.required],
       carModel: ['', Validators.required],
       imageUrl: ['', Validators.required],
       counter: ['', Validators.required],
@@ -31,9 +31,9 @@ export class CarCreateComponent {
       constructionYear: ['', Validators.required],
     });
 
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       this.carForm.patchValue({
-        userEmail: user.email
+        userEmail: user.email,
       });
     });
   }

@@ -15,12 +15,15 @@ import { ProductCreateComponent } from './product/create/product-create.componen
 import { ProductUpdateComponent } from './product/update/product-update.component';
 import { ProductDeleteComponent } from './product/delete/product-delete.component';
 import { ProductDetailsComponent } from './product/details/product-details.component';
+import { UserListComponent } from './user/user-list/user-list.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
 export const appRoutes: Routes = [
   { path: '', component: AppComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'about', component: AboutComponent },
+  //Car
   { path: 'car', component: CarComponent, canActivate: [AuthGuard] },
   {
     path: 'car/details/:id',
@@ -42,6 +45,7 @@ export const appRoutes: Routes = [
     component: CarDeleteComponent,
     canActivate: [AuthGuard],
   },
+  //Product
   { path: 'product', component: ProductComponent, canActivate: [AuthGuard] },
   {
     path: 'product/details/:id',
@@ -61,6 +65,13 @@ export const appRoutes: Routes = [
   {
     path: 'product/delete/:id',
     component: ProductDeleteComponent,
+    canActivate: [AuthGuard],
+  },
+  //User
+  { path: 'users', component: UserListComponent, canActivate: [AuthGuard] },
+  {
+    path: 'user/profile',
+    component: UserProfileComponent,
     canActivate: [AuthGuard],
   },
 ];

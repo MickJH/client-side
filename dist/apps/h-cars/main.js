@@ -33,10 +33,10 @@ const app_controller_1 = __webpack_require__(6);
 const app_service_1 = __webpack_require__(7);
 const config_1 = __webpack_require__(8);
 const user_module_1 = __webpack_require__(9);
-const car_module_1 = __webpack_require__(25);
+const car_module_1 = __webpack_require__(22);
 const car_controller_1 = __webpack_require__(29);
-const jwt_1 = __webpack_require__(23);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_1 = __webpack_require__(24);
+const jwt_auth_guard_1 = __webpack_require__(25);
 const auth_controller_1 = __webpack_require__(17);
 const auth_service_1 = __webpack_require__(19);
 const product_controller_1 = __webpack_require__(31);
@@ -141,8 +141,8 @@ const mongoose_1 = __webpack_require__(11);
 const user_schema_1 = __webpack_require__(16);
 const auth_controller_1 = __webpack_require__(17);
 const auth_service_1 = __webpack_require__(19);
-const car_module_1 = __webpack_require__(25);
-const jwt_1 = __webpack_require__(23);
+const car_module_1 = __webpack_require__(22);
+const jwt_1 = __webpack_require__(24);
 const product_module_1 = __webpack_require__(27);
 let UserModule = exports.UserModule = class UserModule {
 };
@@ -214,6 +214,9 @@ let UserService = exports.UserService = class UserService {
     }
     async validatePayload(payload) {
         return payload;
+    }
+    async getAllUsers() {
+        return this.userModel.find().exec();
     }
     async follow(userEmail, followingUser) {
         if (!userEmail || !followingUser) {
@@ -498,14 +501,11 @@ const user_dto_1 = __webpack_require__(18);
 const user_service_1 = __webpack_require__(10);
 const auth_service_1 = __webpack_require__(19);
 const login_dto_1 = __webpack_require__(21);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_auth_guard_1 = __webpack_require__(25);
 let AuthController = exports.AuthController = class AuthController {
     constructor(userService, authService) {
         this.userService = userService;
         this.authService = authService;
-    }
-    protectedRoute() {
-        return 'This route is protected';
     }
     async checkEmailAvailability(email) {
         const user = await this.userService.findByEmail(email);
@@ -531,13 +531,6 @@ let AuthController = exports.AuthController = class AuthController {
         return req.user;
     }
 };
-tslib_1.__decorate([
-    (0, common_1.Get)('/protected'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], AuthController.prototype, "protectedRoute", null);
 tslib_1.__decorate([
     (0, common_1.Get)('check-email/:email'),
     tslib_1.__param(0, (0, common_1.Param)('email')),
@@ -603,9 +596,6 @@ let AuthService = exports.AuthService = class AuthService {
     async validateUser(payload) {
         return await this.userService.validatePayload(payload);
     }
-    async getCurrentUser(email) {
-        return await this.userService.findByEmail(email);
-    }
 };
 exports.AuthService = AuthService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
@@ -632,6 +622,75 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CarModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const car_service_1 = __webpack_require__(14);
+const car_schema_1 = __webpack_require__(23);
+const auth_service_1 = __webpack_require__(19);
+const auth_controller_1 = __webpack_require__(17);
+const user_module_1 = __webpack_require__(9);
+const jwt_1 = __webpack_require__(24);
+const jwt_auth_guard_1 = __webpack_require__(25);
+let CarModule = exports.CarModule = class CarModule {
+};
+exports.CarModule = CarModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'Car', schema: car_schema_1.CarSchema }]),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+        ],
+        providers: [car_service_1.CarService, auth_service_1.AuthService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard],
+        controllers: [auth_controller_1.AuthController],
+        exports: [car_service_1.CarService],
+    })
+], CarModule);
+
+
+/***/ }),
+/* 23 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CarSchema = void 0;
+const tslib_1 = __webpack_require__(1);
+const mongoose = tslib_1.__importStar(__webpack_require__(12));
+exports.CarSchema = new mongoose.Schema({
+    carModel: { type: String, required: true },
+    counter: { type: Number, required: true },
+    typeOfFuel: {
+        type: String,
+        enum: ['Petrol', 'Diesel', 'Electric'],
+        required: true,
+    },
+    transmissionType: {
+        type: String,
+        enum: ['Automatic', 'Manual'],
+        required: true,
+    },
+    apk: { type: Boolean, required: true },
+    apkExpires: { type: Date },
+    numberPlate: { type: String, unique: true, required: true },
+    constructionYear: { type: Number, required: true },
+    userEmail: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+});
+
+
+/***/ }),
+/* 24 */
+/***/ ((module) => {
+
+module.exports = require("@nestjs/jwt");
+
+/***/ }),
+/* 25 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.JwtAuthGuard = void 0;
@@ -639,8 +698,8 @@ const tslib_1 = __webpack_require__(1);
 // jwt-auth.guard.ts
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
-const jwt_1 = __webpack_require__(23);
-const graphql_1 = __webpack_require__(24);
+const jwt_1 = __webpack_require__(24);
+const graphql_1 = __webpack_require__(26);
 let JwtAuthGuard = exports.JwtAuthGuard = class JwtAuthGuard {
     constructor(reflector, jwtService) {
         this.reflector = reflector;
@@ -679,79 +738,10 @@ exports.JwtAuthGuard = JwtAuthGuard = tslib_1.__decorate([
 
 
 /***/ }),
-/* 23 */
-/***/ ((module) => {
-
-module.exports = require("@nestjs/jwt");
-
-/***/ }),
-/* 24 */
+/* 26 */
 /***/ ((module) => {
 
 module.exports = require("@nestjs/graphql");
-
-/***/ }),
-/* 25 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CarModule = void 0;
-const tslib_1 = __webpack_require__(1);
-const common_1 = __webpack_require__(2);
-const mongoose_1 = __webpack_require__(11);
-const car_service_1 = __webpack_require__(14);
-const car_schema_1 = __webpack_require__(26);
-const auth_service_1 = __webpack_require__(19);
-const auth_controller_1 = __webpack_require__(17);
-const user_module_1 = __webpack_require__(9);
-const jwt_1 = __webpack_require__(23);
-const jwt_auth_guard_1 = __webpack_require__(22);
-let CarModule = exports.CarModule = class CarModule {
-};
-exports.CarModule = CarModule = tslib_1.__decorate([
-    (0, common_1.Module)({
-        imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: 'Car', schema: car_schema_1.CarSchema }]),
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
-        ],
-        providers: [car_service_1.CarService, auth_service_1.AuthService, jwt_1.JwtService, jwt_auth_guard_1.JwtAuthGuard],
-        controllers: [auth_controller_1.AuthController],
-        exports: [car_service_1.CarService],
-    })
-], CarModule);
-
-
-/***/ }),
-/* 26 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CarSchema = void 0;
-const tslib_1 = __webpack_require__(1);
-const mongoose = tslib_1.__importStar(__webpack_require__(12));
-exports.CarSchema = new mongoose.Schema({
-    carModel: { type: String, required: true },
-    counter: { type: Number, required: true },
-    typeOfFuel: {
-        type: String,
-        enum: ['Petrol', 'Diesel', 'Electric'],
-        required: true,
-    },
-    transmissionType: {
-        type: String,
-        enum: ['Automatic', 'Manual'],
-        required: true,
-    },
-    apk: { type: Boolean, required: true },
-    apkExpires: { type: Date },
-    numberPlate: { type: String, unique: true, required: true },
-    constructionYear: { type: Number, required: true },
-    userEmail: { type: String, required: true },
-    imageUrl: { type: String, required: true },
-});
-
 
 /***/ }),
 /* 27 */
@@ -767,8 +757,8 @@ const product_service_1 = __webpack_require__(15);
 const auth_service_1 = __webpack_require__(19);
 const auth_controller_1 = __webpack_require__(17);
 const user_module_1 = __webpack_require__(9);
-const jwt_1 = __webpack_require__(23);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_1 = __webpack_require__(24);
+const jwt_auth_guard_1 = __webpack_require__(25);
 const product_schema_1 = __webpack_require__(28);
 let ProductModule = exports.ProductModule = class ProductModule {
 };
@@ -829,7 +819,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const car_service_1 = __webpack_require__(14);
 const car_dto_1 = __webpack_require__(30);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_auth_guard_1 = __webpack_require__(25);
 let CarController = exports.CarController = class CarController {
     constructor(carService) {
         this.carService = carService;
@@ -932,7 +922,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ProductController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_auth_guard_1 = __webpack_require__(25);
 const product_service_1 = __webpack_require__(15);
 const product_dto_1 = __webpack_require__(32);
 let ProductController = exports.ProductController = class ProductController {
@@ -1038,7 +1028,7 @@ exports.UserController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const user_service_1 = __webpack_require__(10);
-const jwt_auth_guard_1 = __webpack_require__(22);
+const jwt_auth_guard_1 = __webpack_require__(25);
 let UserController = exports.UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -1046,7 +1036,8 @@ let UserController = exports.UserController = class UserController {
     async follow(req, body) {
         const userEmail = req.user.email;
         const { followingUser } = body;
-        return this.userService.follow(userEmail, followingUser);
+        await this.userService.follow(userEmail, followingUser);
+        return { message: 'User followed successfully' };
     }
     async likeCar(req, body) {
         const userEmail = req.user.email;
@@ -1067,6 +1058,13 @@ let UserController = exports.UserController = class UserController {
     async getLikedProducts(req) {
         const userEmail = req.user.email;
         return this.userService.getLikedProducts(userEmail);
+    }
+    async getProfile(req) {
+        const userEmail = req.user.email;
+        return this.userService.findByEmail(userEmail);
+    }
+    async getAllUsers() {
+        return this.userService.getAllUsers();
     }
 };
 tslib_1.__decorate([
@@ -1107,6 +1105,19 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "getLikedProducts", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('profile'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getProfile", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('all-users'),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", []),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUsers", null);
 exports.UserController = UserController = tslib_1.__decorate([
     (0, common_1.Controller)('user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
