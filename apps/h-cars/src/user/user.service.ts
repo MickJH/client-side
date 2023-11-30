@@ -9,6 +9,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { CarService } from '../car/car.service';
 import { ProductService } from '../product/product.service';
 import { Car } from '../car/car';
+import { Product } from '../product/product';
 
 @Injectable()
 export class UserService {
@@ -179,12 +180,21 @@ export class UserService {
     return likedCars;
   }
 
-  getLikedProducts(userEmail: string) {
-    return this.findByEmail(userEmail).then((user) => {
-      if (!user) {
-        throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND);
-      }
-      return user.likedProducts;
-    });
+  async getLikedProducts(userEmail: string): Promise<Product[]> {
+    const user = await this.findByEmail(userEmail);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const likedProductIds = user.likedProducts.map(
+      (likedProduct) => likedProduct.productId
+    );
+
+    const likedProducts = await this.productService.getProductsByIds(
+      likedProductIds
+    );
+
+    return likedProducts;
   }
 }

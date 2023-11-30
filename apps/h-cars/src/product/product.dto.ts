@@ -10,5 +10,4 @@ export interface ProductDTO {
   category: Category;
   brand: string;
   createdAt: Date;
-  likes: { type: mongoose.Schema.Types.ObjectId; ref: 'Like' }[];
 }

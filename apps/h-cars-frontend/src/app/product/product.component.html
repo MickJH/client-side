@@ -6,14 +6,21 @@
         [class.active]="activeTab === 'allProducts'"
         (click)="showAllProducts()"
       >
-        All Products
+        All products
       </button>
       <button
         class="tab-button"
         [class.active]="activeTab === 'myProducts'"
         (click)="showMyProducts()"
       >
-        My Products
+        My products
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'likedProducts'"
+        (click)="showLikedProducts()"
+      >
+        Liked products
       </button>
     </div>
 
@@ -21,7 +28,11 @@
       <div
         class="product-card"
         *ngFor="
-          let product of activeTab === 'allProducts' ? products : myProducts
+          let product of activeTab === 'allProducts'
+            ? products
+            : activeTab === 'myProducts'
+            ? myProducts
+            : likedProducts
         "
       >
         <div class="info-row">
@@ -55,9 +66,24 @@
           >
             Details
           </button>
+          <button
+            *ngIf="activeTab === 'myProducts'"
+            [routerLink]="['/product/update', product._id]"
+            class="btn btn-warning"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="activeTab === 'myProducts'"
+            [routerLink]="['/product/delete', product._id]"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
+
     <div class="container mt-5">
       <div class="row mb-3">
         <div class="col-md-12 text-center">

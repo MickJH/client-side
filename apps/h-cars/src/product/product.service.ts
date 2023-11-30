@@ -36,4 +36,8 @@ export class ProductService {
   async delete(id: string) {
     return this.productModel.findByIdAndDelete(id).exec();
   }
+
+  async getProductsByIds(productIds: string[]): Promise<Product[]> {
+    return this.productModel.find({ _id: { $in: productIds } }).exec();
+  }
 }

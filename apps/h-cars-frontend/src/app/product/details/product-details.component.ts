@@ -10,6 +10,7 @@ import { ProductService } from '../product.service';
 })
 export class ProductDetailsComponent implements OnInit {
   product: Product | null = null;
+  errorMessage = '';
 
   constructor(
     private productService: ProductService,
@@ -38,5 +39,42 @@ export class ProductDetailsComponent implements OnInit {
     if (this.product) {
       this.router.navigate(['/product/delete', this.product._id]);
     }
+  }
+
+  likeProduct(carId: string): void {
+    this.productService.likeProduct(carId).subscribe(
+      () => {
+        this.errorMessage = 'Car liked successfully';
+      },
+      (error) => {
+        if (
+          error.status === 400 &&
+          error.error.message === 'missing parameters'
+        ) {
+          this.displayErrorMessage('Missing parameters');
+        } else if (
+          error.status === 404 &&
+          error.error.message === 'user doesnt exist'
+        ) {
+          this.displayErrorMessage('User not found');
+        } else if (
+          error.status === 404 &&
+          error.error.message === 'product not found'
+        ) {
+          this.displayErrorMessage('Car not found');
+        } else if (
+          error.status === 400 &&
+          error.error.message === 'You have already liked this car'
+        ) {
+          this.displayErrorMessage('You have already liked this car');
+        } else {
+          this.displayErrorMessage('Unexpected error during like operation');
+        }
+      }
+    );
+  }
+
+  private displayErrorMessage(message: string): void {
+    this.errorMessage = message;
   }
 }

@@ -290,13 +290,14 @@ let UserService = exports.UserService = class UserService {
         const likedCars = await this.carService.getCarsByIds(likedCarIds);
         return likedCars;
     }
-    getLikedProducts(userEmail) {
-        return this.findByEmail(userEmail).then((user) => {
-            if (!user) {
-                throw new common_1.HttpException('user doesnt exist', common_1.HttpStatus.NOT_FOUND);
-            }
-            return user.likedProducts;
-        });
+    async getLikedProducts(userEmail) {
+        const user = await this.findByEmail(userEmail);
+        if (!user) {
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        const likedProductIds = user.likedProducts.map((likedProduct) => likedProduct.productId);
+        const likedProducts = await this.productService.getProductsByIds(likedProductIds);
+        return likedProducts;
     }
 };
 exports.UserService = UserService = tslib_1.__decorate([
@@ -413,6 +414,9 @@ let ProductService = exports.ProductService = class ProductService {
     }
     async delete(id) {
         return this.productModel.findByIdAndDelete(id).exec();
+    }
+    async getProductsByIds(productIds) {
+        return this.productModel.find({ _id: { $in: productIds } }).exec();
     }
 };
 exports.ProductService = ProductService = tslib_1.__decorate([
@@ -746,7 +750,6 @@ exports.CarSchema = new mongoose.Schema({
     constructionYear: { type: Number, required: true },
     userEmail: { type: String, required: true },
     imageUrl: { type: String, required: true },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
 });
 
 
@@ -811,7 +814,6 @@ exports.ProductSchema = new mongoose.Schema({
     },
     brand: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
 });
 
 

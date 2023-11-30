@@ -6,71 +6,71 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.CarService = void 0;
+exports.ProductService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var CarService = /** @class */ (function () {
-    function CarService(http) {
+var ProductService = /** @class */ (function () {
+    function ProductService(http) {
         this.http = http;
         this.apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
     }
-    CarService.prototype.getHeaders = function () {
+    ProductService.prototype.getHeaders = function () {
         var token = localStorage.getItem('token');
         return new http_1.HttpHeaders({
             'Content-Type': 'application/json',
             Authorization: "Bearer " + token
         });
     };
-    CarService.prototype.getAllCars = function () {
+    ProductService.prototype.getAllProducts = function () {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/car/all-cars", {
+        return this.http.get(this.apiUrl + "/product/all-products", {
             headers: headers
         });
     };
-    CarService.prototype.getCarById = function (id) {
+    ProductService.prototype.getProductById = function (id) {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/car/id/" + id, {
+        return this.http.get(this.apiUrl + "/product/id/" + id, {
             headers: headers
         });
     };
-    CarService.prototype.createCar = function (car) {
+    ProductService.prototype.createProduct = function (product) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/car/create-car", car, {
+        return this.http.post(this.apiUrl + "/product/create-product", product, { headers: headers });
+    };
+    ProductService.prototype.updateProduct = function (id, product) {
+        var headers = this.getHeaders();
+        return this.http.post(this.apiUrl + "/product/update-product/" + id, product, {
             headers: headers
         });
     };
-    CarService.prototype.updateCar = function (id, car) {
+    ProductService.prototype.deleteProduct = function (id) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/car/update-car/" + id, car, {
+        return this.http.post(this.apiUrl + "/product/delete-product/" + id, {}, { headers: headers });
+    };
+    ProductService.prototype.getUserProducts = function () {
+        var headers = this.getHeaders();
+        return this.http.get(this.apiUrl + "/product/my-products", {
             headers: headers
         });
     };
-    CarService.prototype.deleteCar = function (id) {
+    ProductService.prototype.likeProduct = function (productId) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/car/delete-car/" + id, {}, { headers: headers });
-    };
-    CarService.prototype.getUserCars = function () {
-        var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/car/my-cars", { headers: headers });
-    };
-    CarService.prototype.likeCar = function (carId) {
-        var headers = this.getHeaders();
-        var body = { carId: carId };
-        return this.http.post(this.apiUrl + "/user/like-car", body, {
+        var body = { productId: productId };
+        return this.http.post(this.apiUrl + "/user/like-product", body, {
             headers: headers
         });
     };
-    CarService.prototype.getLikedCars = function () {
+    ProductService.prototype.getLikedProducts = function () {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/user/liked-cars", {
+        return this.http.get(this.apiUrl + "/user/liked-products", {
             headers: headers
         });
     };
-    CarService = __decorate([
+    ProductService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         })
-    ], CarService);
-    return CarService;
+    ], ProductService);
+    return ProductService;
 }());
-exports.CarService = CarService;
+exports.ProductService = ProductService;

@@ -14,5 +14,4 @@ export interface Product {
     | 'Other';
   brand: string;
   createdAt: Date;
-  liked?: boolean;
 }

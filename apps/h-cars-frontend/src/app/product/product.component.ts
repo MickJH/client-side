@@ -10,8 +10,9 @@ import { ProductService } from './product.service';
 export class ProductComponent implements OnInit {
   products: Product[] = [];
   myProducts: Product[] = [];
+  likedProducts: Product[] = [];
   selectedProduct: Product | null = null;
-  activeTab: 'allProducts' | 'myProducts' = 'allProducts';
+  activeTab: 'allProducts' | 'myProducts' | 'likedProducts' = 'allProducts';
 
   constructor(private productService: ProductService) {}
 
@@ -21,23 +22,22 @@ export class ProductComponent implements OnInit {
 
   showAllProducts(): void {
     this.activeTab = 'allProducts';
-    this.loadProducts();
-  }
-
-  showMyProducts(): void {
-    this.activeTab = 'myProducts';
-    this.loadMyProducts();
-  }
-
-  loadProducts(): void {
     this.productService.getAllProducts().subscribe((products) => {
       this.products = products;
     });
   }
 
-  loadMyProducts(): void {
+  showMyProducts(): void {
+    this.activeTab = 'myProducts';
     this.productService.getUserProducts().subscribe((myProducts) => {
       this.myProducts = myProducts;
+    });
+  }
+
+  showLikedProducts(): void {
+    this.activeTab = 'likedProducts';
+    this.productService.getLikedProducts().subscribe((likedProducts) => {
+      this.likedProducts = likedProducts;
     });
   }
 }

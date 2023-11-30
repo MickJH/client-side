@@ -14,47 +14,33 @@ var CarComponent = /** @class */ (function () {
         this.carService = carService;
         this.cars = [];
         this.myCars = [];
+        this.likedCars = [];
         this.selectedCar = null;
         this.activeTab = 'allCars';
+        this.errorMessage = '';
     }
     CarComponent.prototype.ngOnInit = function () {
         this.showAllCars();
     };
     CarComponent.prototype.showAllCars = function () {
-        this.activeTab = 'allCars';
-        this.loadCars();
-    };
-    CarComponent.prototype.showMyCars = function () {
-        this.activeTab = 'myCars';
-        this.loadMyCars();
-    };
-    CarComponent.prototype.loadCars = function () {
         var _this = this;
+        this.activeTab = 'allCars';
         this.carService.getAllCars().subscribe(function (cars) {
             _this.cars = cars;
         });
     };
-    CarComponent.prototype.loadMyCars = function () {
+    CarComponent.prototype.showMyCars = function () {
         var _this = this;
+        this.activeTab = 'myCars';
         this.carService.getUserCars().subscribe(function (myCars) {
             _this.myCars = myCars;
         });
     };
-    CarComponent.prototype.likeCar = function (id) {
-        var _this = this;
-        this.carService.likeCar(id).subscribe(function () {
-            // Toggle the liked status
-            var car = _this.cars.find(function (c) { return c._id === id; });
-            if (car) {
-                car.liked = !car.liked;
-            }
-        });
-    };
     CarComponent.prototype.showLikedCars = function () {
         var _this = this;
-        this.carService.getLikedCars().subscribe(function (cars) {
-            _this.activeTab = 'likedCars';
-            _this.cars = cars;
+        this.activeTab = 'likedCars';
+        this.carService.getLikedCars().subscribe(function (likedCars) {
+            _this.likedCars = likedCars;
         });
     };
     CarComponent = __decorate([

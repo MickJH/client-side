@@ -24,31 +24,22 @@ export class CarComponent implements OnInit {
 
   showAllCars(): void {
     this.activeTab = 'allCars';
-    this.loadCars();
-  }
-
-  showMyCars(): void {
-    this.activeTab = 'myCars';
-    this.loadMyCars();
-  }
-
-  loadCars(): void {
     this.carService.getAllCars().subscribe((cars) => {
       this.cars = cars;
     });
   }
 
-  loadMyCars(): void {
+  showMyCars(): void {
+    this.activeTab = 'myCars';
     this.carService.getUserCars().subscribe((myCars) => {
       this.myCars = myCars;
     });
   }
 
   showLikedCars(): void {
+    this.activeTab = 'likedCars';
     this.carService.getLikedCars().subscribe((likedCars) => {
-      this.activeTab = 'likedCars';
       this.likedCars = likedCars;
-      console.log(likedCars);
     });
   }
 }

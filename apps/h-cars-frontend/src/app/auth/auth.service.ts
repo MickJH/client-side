@@ -8,7 +8,8 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  public apiUrl = 'http://localhost:3000/api';
+  public apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
+
   currentUser: any;
 
   constructor(private http: HttpClient) {}
@@ -44,7 +45,7 @@ export class AuthService {
       .get<any>(`${this.apiUrl}/auth/current-user`, { headers })
       .pipe(
         map((user) => {
-          this.currentUser = user; // Store the user information
+          this.currentUser = user;
           return user;
         })
       );
