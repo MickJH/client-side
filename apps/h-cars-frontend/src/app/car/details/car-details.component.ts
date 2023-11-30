@@ -1,4 +1,3 @@
-// car-details.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Car } from '../car.model';
@@ -11,8 +10,13 @@ import { CarService } from '../car.service';
 })
 export class CarDetailsComponent implements OnInit {
   car: Car | null = null;
+  errorMessage = '';
 
-  constructor(private carService: CarService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private carService: CarService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -35,5 +39,42 @@ export class CarDetailsComponent implements OnInit {
     if (this.car) {
       this.router.navigate(['/car/delete', this.car._id]);
     }
+  }
+
+  likeCar(carId: string): void {
+    this.carService.likeCar(carId).subscribe(
+      () => {
+        this.errorMessage = 'Car liked successfully';
+      },
+      (error) => {
+        if (
+          error.status === 400 &&
+          error.error.message === 'missing parameters'
+        ) {
+          this.displayErrorMessage('Missing parameters');
+        } else if (
+          error.status === 404 &&
+          error.error.message === 'user doesnt exist'
+        ) {
+          this.displayErrorMessage('User not found');
+        } else if (
+          error.status === 404 &&
+          error.error.message === 'product not found'
+        ) {
+          this.displayErrorMessage('Car not found');
+        } else if (
+          error.status === 400 &&
+          error.error.message === 'You have already liked this car'
+        ) {
+          this.displayErrorMessage('You have already liked this car');
+        } else {
+          this.displayErrorMessage('Unexpected error during like operation');
+        }
+      }
+    );
+  }
+
+  private displayErrorMessage(message: string): void {
+    this.errorMessage = message;
   }
 }

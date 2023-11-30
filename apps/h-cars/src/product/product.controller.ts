@@ -7,7 +7,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtPayload } from 'jsonwebtoken';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProductService } from './product.service';
 import { ProductDTO } from './product.dto';

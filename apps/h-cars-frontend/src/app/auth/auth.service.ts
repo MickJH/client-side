@@ -4,12 +4,12 @@ import { AuthResponse } from './auth.response';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   public apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
+
   currentUser: any;
 
   constructor(private http: HttpClient) {}
@@ -27,21 +27,27 @@ export class AuthService {
   }
 
   login(credentials: any) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials);
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/auth/login`,
+      credentials
+    );
   }
 
   checkEmailAvailability(email: string): Observable<{ isAvailable: boolean }> {
-    return this.http.get<{ isAvailable: boolean }>(`${this.apiUrl}/auth/check-email/${email}`);
+    return this.http.get<{ isAvailable: boolean }>(
+      `${this.apiUrl}/auth/check-email/${email}`
+    );
   }
 
   getCurrentUser(): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.get<any>(`${this.apiUrl}/auth/current-user`, { headers }).pipe(
-      map((user) => {
-        this.currentUser = user; // Store the user information
-        return user;
-      }),
-    );
+    return this.http
+      .get<any>(`${this.apiUrl}/auth/current-user`, { headers })
+      .pipe(
+        map((user) => {
+          this.currentUser = user;
+          return user;
+        })
+      );
   }
-  
 }

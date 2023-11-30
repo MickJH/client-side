@@ -11,8 +11,10 @@ import { CarService } from './car.service';
 export class CarComponent implements OnInit {
   cars: Car[] = [];
   myCars: Car[] = [];
+  likedCars: Car[] = [];
   selectedCar: Car | null = null;
-  activeTab: 'allCars' | 'myCars' = 'allCars';
+  activeTab: 'allCars' | 'myCars' | 'likedCars' = 'allCars';
+  errorMessage = '';
 
   constructor(private carService: CarService) {}
 
@@ -22,23 +24,22 @@ export class CarComponent implements OnInit {
 
   showAllCars(): void {
     this.activeTab = 'allCars';
-    this.loadCars();
-  }
-
-  showMyCars(): void {
-    this.activeTab = 'myCars';
-    this.loadMyCars();
-  }
-
-  loadCars(): void {
     this.carService.getAllCars().subscribe((cars) => {
       this.cars = cars;
     });
   }
 
-  loadMyCars(): void {
+  showMyCars(): void {
+    this.activeTab = 'myCars';
     this.carService.getUserCars().subscribe((myCars) => {
       this.myCars = myCars;
+    });
+  }
+
+  showLikedCars(): void {
+    this.activeTab = 'likedCars';
+    this.carService.getLikedCars().subscribe((likedCars) => {
+      this.likedCars = likedCars;
     });
   }
 }

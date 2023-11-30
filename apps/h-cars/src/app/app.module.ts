@@ -13,6 +13,7 @@ import { AuthController } from '../auth/auth.controller';
 import { AuthService } from '../auth/auth.service';
 import { ProductController } from '../product/product.controller';
 import { ProductModule } from '../product/product.module';
+import { UserController } from '../user/user.controller';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ProductModule } from '../product/product.module';
     AuthController,
     CarController,
     ProductController,
+    UserController,
   ],
   providers: [AppService, JwtService, JwtAuthGuard, AuthService],
 })

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Category } from './product';
 
 export interface ProductDTO {

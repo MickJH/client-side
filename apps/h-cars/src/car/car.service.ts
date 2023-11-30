@@ -40,4 +40,8 @@ export class CarService {
   async delete(id: string) {
     return this.carModel.findByIdAndDelete(id).exec();
   }
+
+  async getCarsByIds(carIds: string[]): Promise<Car[]> {
+    return this.carModel.find({ _id: { $in: carIds } }).exec();
+  }
 }

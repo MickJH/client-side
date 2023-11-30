@@ -7,14 +7,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
-import { UserDTO } from '../user/user.dto';
-import { UserService } from '../user/user.service';
-import { JwtPayload } from 'jsonwebtoken';
 import { CarService } from '../car/car.service';
 import { CarDTO } from '../car/car.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { User } from '../user/user';
+
 
 @Controller('car')
 export class CarController {

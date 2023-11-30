@@ -7,7 +7,33 @@ export const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   age: { type: Number, required: true },
   firstName: { type: String, required: true },
-  lastName: { type: String, required: true }
+  lastName: { type: String, required: true },
+  following: [
+    {
+      followingUser: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  likedCars: [
+    {
+      carId: {
+        type: String,
+        ref: 'Car',
+        required: true,
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  likedProducts: [
+    {
+      productId: {
+        type: String,
+        ref: 'Product',
+        required: true,
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 UserSchema.pre('save', async function (next: NextFunction) {

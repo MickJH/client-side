@@ -68,4 +68,19 @@ export class ProductService {
       headers,
     });
   }
+
+  likeProduct(productId: string): Observable<Product> {
+    const headers = this.getHeaders();
+    const body = { productId };
+    return this.http.post<Product>(`${this.apiUrl}/user/like-product`, body, {
+      headers,
+    });
+  }
+
+  getLikedProducts(): Observable<Product[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Product[]>(`${this.apiUrl}/user/liked-products`, {
+      headers,
+    });
+  }
 }
