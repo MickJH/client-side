@@ -1,5 +1,8 @@
 import { TestBed, inject, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -27,27 +30,40 @@ describe('AuthService', () => {
   });
 
   it('should register a user', () => {
-    const mockUser = { email: 'holstermick@gmail.com', password: 'password123', age: 19, firstName: 'Mick', lastName: 'Holster' };
+    const mockUser = {
+      email: 'holstermick@gmail.com',
+      password: 'password123',
+      age: 19,
+      firstName: 'Mick',
+      lastName: 'Holster',
+    };
     const mockResponse = { token: 'mockToken' };
 
-    authService.register(mockUser).subscribe(response => {
+    authService.register(mockUser).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpTestingController.expectOne(`${authService.apiUrl}/auth/register`);
+    const req = httpTestingController.expectOne(
+      `${authService.apiUrl}/auth/register`
+    );
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });
 
   it('should log in a user', () => {
-    const mockCredentials = { email: 'holstermick@gmail.com', password: 'password123' };
+    const mockCredentials = {
+      email: 'holstermick@gmail.com',
+      password: 'password123',
+    };
     const mockResponse = { token: 'mockToken' };
 
-    authService.login(mockCredentials).subscribe(response => {
+    authService.login(mockCredentials).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpTestingController.expectOne(`${authService.apiUrl}/auth/login`);
+    const req = httpTestingController.expectOne(
+      `${authService.apiUrl}/auth/login`
+    );
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });
