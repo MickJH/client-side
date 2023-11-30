@@ -40,7 +40,7 @@ var ProductDetailsComponent = /** @class */ (function () {
     ProductDetailsComponent.prototype.likeProduct = function (carId) {
         var _this = this;
         this.productService.likeProduct(carId).subscribe(function () {
-            _this.errorMessage = 'Car liked successfully';
+            _this.errorMessage = 'Product liked successfully';
         }, function (error) {
             if (error.status === 400 &&
                 error.error.message === 'missing parameters') {
@@ -52,11 +52,11 @@ var ProductDetailsComponent = /** @class */ (function () {
             }
             else if (error.status === 404 &&
                 error.error.message === 'product not found') {
-                _this.displayErrorMessage('Car not found');
+                _this.displayErrorMessage('Product not found');
             }
             else if (error.status === 400 &&
-                error.error.message === 'You have already liked this car') {
-                _this.displayErrorMessage('You have already liked this car');
+                error.error.message === 'You have already liked this product') {
+                _this.displayErrorMessage('You have already liked this product');
             }
             else {
                 _this.displayErrorMessage('Unexpected error during like operation');

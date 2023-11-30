@@ -20,12 +20,6 @@ export class AuthController {
     private authService: AuthService
   ) {}
 
-  @Get('/protected')
-  @UseGuards(JwtAuthGuard)
-  protectedRoute() {
-    return 'This route is protected';
-  }
-
   @Get('check-email/:email')
   async checkEmailAvailability(@Param('email') email: string) {
     const user = await this.userService.findByEmail(email);

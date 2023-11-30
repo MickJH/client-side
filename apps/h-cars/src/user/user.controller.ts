@@ -19,7 +19,8 @@ export class UserController {
     const userEmail = req.user.email;
     const { followingUser } = body;
 
-    return this.userService.follow(userEmail, followingUser);
+    await this.userService.follow(userEmail, followingUser);
+    return { message: 'User followed successfully' };
   }
 
   @Post('like-car')
@@ -50,5 +51,16 @@ export class UserController {
   async getLikedProducts(@Request() req) {
     const userEmail = req.user.email;
     return this.userService.getLikedProducts(userEmail);
+  }
+
+  @Get('profile')
+  async getProfile(@Request() req) {
+    const userEmail = req.user.email;
+    return this.userService.findByEmail(userEmail);
+  }
+
+  @Get('all-users')
+  async getAllUsers() {
+    return this.userService.getAllUsers();
   }
 }

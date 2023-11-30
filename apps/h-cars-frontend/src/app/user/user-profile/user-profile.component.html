@@ -1,0 +1,23 @@
+<div class="user-profile-container">
+  <div class="user-profile-box">
+    <div class="user-details">
+      <h2>Your Profile</h2>
+      <div>
+        <p>Email: {{ user?.email }}</p>
+        <p>First Name: {{ user?.firstName }}</p>
+        <p>Last Name: {{ user?.lastName }}</p>
+        <p>Age: {{ user?.age }}</p>
+      </div>
+      <div class="following-info">
+        <p>Following:</p>
+        <ul>
+          <li *ngFor="let following of user?.following">
+            {{ following.followingUser }}
+          </li>
+        </ul>
+      </div>
+
+      <a class="btn btn-primary" [routerLink]="['/users']">All users</a>
+    </div>
+  </div>
+</div>

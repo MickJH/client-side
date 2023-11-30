@@ -58,6 +58,10 @@ export class UserService {
     return payload;
   }
 
+  async getAllUsers() {
+    return this.userModel.find().exec();
+  }
+
   async follow(userEmail: string, followingUser: string) {
     if (!userEmail || !followingUser) {
       throw new HttpException('missing parameters', HttpStatus.BAD_REQUEST);

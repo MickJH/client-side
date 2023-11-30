@@ -44,7 +44,7 @@ export class ProductDetailsComponent implements OnInit {
   likeProduct(carId: string): void {
     this.productService.likeProduct(carId).subscribe(
       () => {
-        this.errorMessage = 'Car liked successfully';
+        this.errorMessage = 'Product liked successfully';
       },
       (error) => {
         if (
@@ -61,12 +61,12 @@ export class ProductDetailsComponent implements OnInit {
           error.status === 404 &&
           error.error.message === 'product not found'
         ) {
-          this.displayErrorMessage('Car not found');
+          this.displayErrorMessage('Product not found');
         } else if (
           error.status === 400 &&
-          error.error.message === 'You have already liked this car'
+          error.error.message === 'You have already liked this product'
         ) {
-          this.displayErrorMessage('You have already liked this car');
+          this.displayErrorMessage('You have already liked this product');
         } else {
           this.displayErrorMessage('Unexpected error during like operation');
         }
