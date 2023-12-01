@@ -55,8 +55,4 @@ import { UserProfileComponent } from './user/user-profile/user-profile.component
   providers: [AuthGuard],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-  constructor() {
-    console.log('AppModule loaded.');
-  }
-}
+export class AppModule {}
