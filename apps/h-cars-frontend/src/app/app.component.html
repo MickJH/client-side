@@ -6,6 +6,9 @@
   <a [routerLink]="['/about']">About</a>
   <a [routerLink]="['/car']">Car</a>
   <a [routerLink]="['/product']">Products</a>
+  <a [routerLink]="['/login']" *ngIf="isLoggedIn()" (click)="logOut()"
+    >Logout</a
+  >
 </div>
 
 <router-outlet></router-outlet>
