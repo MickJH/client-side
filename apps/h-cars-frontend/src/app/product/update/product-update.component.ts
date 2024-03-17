@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../product.model';
 import { ProductService } from '../product.service';
 import { AuthService } from '../../auth/auth.service';
+import { Car } from '../../car/car.model';
+import { CarService } from '../../car/car.service';
 
 @Component({
   selector: 'client-side-product-update',
@@ -14,13 +16,16 @@ export class ProductUpdateComponent implements OnInit {
   productForm: FormGroup;
   product: Product | null = null;
   isProductOwner = false;
+  cars: Car[] = [];
+  isUniversal = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private carService: CarService
   ) {
     this.productForm = this.formBuilder.group({
       productName: ['', Validators.required],
@@ -29,11 +34,17 @@ export class ProductUpdateComponent implements OnInit {
       imageUrl: ['', Validators.required],
       category: ['', Validators.required],
       brand: ['', Validators.required],
+      car: ['', Validators.required],
+      isUniversal: [false],
       createdAt: [new Date()],
     });
   }
 
   ngOnInit(): void {
+    this.carService.getAllCars().subscribe((cars) => {
+      this.cars = cars;
+    });
+
     this.route.paramMap.subscribe((params) => {
       const productId = params.get('id');
       if (productId) {
@@ -54,6 +65,7 @@ export class ProductUpdateComponent implements OnInit {
                 brand: product.brand,
                 createdAt: product.createdAt,
                 userEmail: product.userEmail,
+                car: product.car,
               });
             } else {
               // Redirect or show an error message indicating the user doesn't have permission
@@ -65,6 +77,21 @@ export class ProductUpdateComponent implements OnInit {
         });
       }
     });
+  }
+
+  toggleUniversal(): void {
+    // Toggle universal flag
+    this.isUniversal = !this.isUniversal;
+    this.productForm.patchValue({
+      car: this.isUniversal ? 'Universal' : '',
+    });
+
+    // Disable car selection if universal
+    if (this.isUniversal) {
+      this.productForm.get('car')?.disable();
+    } else {
+      this.productForm.get('car')?.enable();
+    }
   }
 
   updateProduct(): void {

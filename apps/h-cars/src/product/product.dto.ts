@@ -10,4 +10,5 @@ export interface ProductDTO {
   category: Category;
   brand: string;
   createdAt: Date;
+  car: string;
 }

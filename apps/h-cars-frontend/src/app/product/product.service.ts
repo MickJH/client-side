@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { Product } from './product.model';
+import { Car } from '../car/car.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +39,9 @@ export class ProductService {
     return this.http.post<Product>(
       `${this.apiUrl}/product/create-product`,
       product,
-      { headers }
+      {
+        headers,
+      }
     );
   }
 

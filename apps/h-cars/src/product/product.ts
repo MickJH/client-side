@@ -17,5 +17,6 @@ export interface Product extends Document {
   imageUrl: string;
   category: Category;
   brand: string;
+  car: string;
   createdAt: Date;
 }

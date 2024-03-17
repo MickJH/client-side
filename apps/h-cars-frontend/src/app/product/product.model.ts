@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   userEmail: string;
   imageUrl: string;
+  car: string;
   category:
     | 'Electronic'
     | 'Liquid'

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../product.model';
 import { ProductService } from '../product.service';
+import { Car } from '../../car/car.model';
+import { CarService } from '../../car/car.service';
 
 @Component({
   selector: 'client-side-product-details',
@@ -11,14 +13,18 @@ import { ProductService } from '../product.service';
 export class ProductDetailsComponent implements OnInit {
   product: Product | null = null;
   errorMessage = '';
+  cars: Car[] = [];
 
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private carService: CarService
   ) {}
 
   ngOnInit(): void {
+    this.loadCars();
+
     this.route.paramMap.subscribe((params) => {
       const productId = params.get('id');
       if (productId) {
@@ -76,5 +82,19 @@ export class ProductDetailsComponent implements OnInit {
 
   private displayErrorMessage(message: string): void {
     this.errorMessage = message;
+  }
+
+  loadCars(): void {
+    this.carService.getAllCars().subscribe((cars) => {
+      this.cars = cars;
+    });
+  }
+
+  getCarModel(carId: string | undefined): string {
+    if (!carId) {
+      return 'Universal';
+    }
+    const car = this.cars.find((c) => c._id === carId);
+    return car ? car.carModel : 'Universal';
   }
 }
