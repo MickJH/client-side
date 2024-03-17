@@ -41,6 +41,7 @@
             [src]="product.imageUrl"
             alt="Product Image"
             class="product-image"
+            style="max-height: 200px"
           />
         </div>
 
@@ -57,6 +58,11 @@
         <div class="info-row">
           <div class="info-label">Description:</div>
           <div>{{ product.description }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Car:</div>
+          <div>{{ getCarModel(product.car) }}</div>
         </div>
 
         <div class="product-buttons">

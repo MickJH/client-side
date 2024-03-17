@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from './product.model';
 import { ProductService } from './product.service';
+import { Car } from '../car/car.model';
+import { CarService } from '../car/car.service';
 
 @Component({
   selector: 'client-side-product',
@@ -12,12 +14,17 @@ export class ProductComponent implements OnInit {
   myProducts: Product[] = [];
   likedProducts: Product[] = [];
   selectedProduct: Product | null = null;
+  cars: Car[] = [];
   activeTab: 'allProducts' | 'myProducts' | 'likedProducts' = 'allProducts';
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private carService: CarService
+  ) {}
 
   ngOnInit(): void {
     this.showAllProducts();
+    this.loadCars();
   }
 
   showAllProducts(): void {
@@ -39,5 +46,16 @@ export class ProductComponent implements OnInit {
     this.productService.getLikedProducts().subscribe((likedProducts) => {
       this.likedProducts = likedProducts;
     });
+  }
+
+  loadCars(): void {
+    this.carService.getAllCars().subscribe((cars) => {
+      this.cars = cars;
+    });
+  }
+
+  getCarModel(carId: string): string {
+    const car = this.cars.find((c) => c._id === carId);
+    return car ? car.carModel : 'Universal';
   }
 }

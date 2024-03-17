@@ -48,6 +48,31 @@
         </div>
 
         <div class="form-group">
+          <label for="car">Select Car:</label>
+          <select id="car" formControlName="car">
+            <option *ngFor="let car of cars" [value]="car._id">
+              {{ car.carModel }}
+            </option>
+          </select>
+          <div
+            *ngIf="productForm.get('car')?.hasError('required')"
+            class="error-message"
+          >
+            Car is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="isUniversal">Universal Product ?</label>
+          <input
+            type="checkbox"
+            id="isUniversal"
+            formControlName="isUniversal"
+            (change)="toggleUniversal()"
+          />
+        </div>
+
+        <div class="form-group">
           <label for="imageUrl">ImageUrl</label>
           <textarea id="imageUrl" formControlName="imageUrl"></textarea>
           <div

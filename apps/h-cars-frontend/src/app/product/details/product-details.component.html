@@ -18,12 +18,17 @@
 
         <div class="info-row">
           <div class="info-label">Price:</div>
-          <div>{{ product?.price }}</div>
+          <div>{{ product?.price | currency }}</div>
         </div>
 
         <div class="info-row">
           <div class="info-label">Description:</div>
           <div>{{ product?.description }}</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">Car:</div>
+          <div>{{ getCarModel(product?.car) }}</div>
         </div>
 
         <div class="info-row">

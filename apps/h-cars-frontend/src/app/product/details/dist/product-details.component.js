@@ -15,6 +15,7 @@ var ProductDetailsComponent = /** @class */ (function () {
         this.router = router;
         this.product = null;
         this.errorMessage = '';
+        this.car = null;
     }
     ProductDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -23,6 +24,12 @@ var ProductDetailsComponent = /** @class */ (function () {
             if (productId) {
                 _this.productService.getProductById(productId).subscribe(function (product) {
                     _this.product = product;
+                    if (product.car !== 'Universal') {
+                        // If not a universal product, fetch car details
+                        _this.productService.getCarById(product.car).subscribe(function (car) {
+                            _this.car = car;
+                        });
+                    }
                 });
             }
         });
