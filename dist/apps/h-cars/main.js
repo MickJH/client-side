@@ -42,6 +42,7 @@ const auth_service_1 = __webpack_require__(19);
 const product_controller_1 = __webpack_require__(31);
 const product_module_1 = __webpack_require__(27);
 const user_controller_1 = __webpack_require__(33);
+const neo4j_module_1 = __webpack_require__(37);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -52,6 +53,7 @@ exports.AppModule = AppModule = tslib_1.__decorate([
             user_module_1.UserModule,
             car_module_1.CarModule,
             product_module_1.ProductModule,
+            neo4j_module_1.Neo4jModule,
         ],
         controllers: [
             app_controller_1.AppController,
@@ -1023,16 +1025,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const user_service_1 = __webpack_require__(10);
 const jwt_auth_guard_1 = __webpack_require__(22);
+const neo4j_service_1 = __webpack_require__(34);
 let UserController = exports.UserController = class UserController {
-    constructor(userService) {
+    constructor(userService, neo4jService) {
         this.userService = userService;
+        this.neo4jService = neo4jService;
     }
     async follow(req, body) {
         const userEmail = req.user.email;
@@ -1066,6 +1070,14 @@ let UserController = exports.UserController = class UserController {
     }
     async getAllUsers() {
         return this.userService.getAllUsers();
+    }
+    async getRecommendedCars(req) {
+        const userEmail = req.user.email;
+        return this.neo4jService.recommendCarsBasedOnFollowedUserLikes(userEmail);
+    }
+    async getRecommendedProducts(req) {
+        const userEmail = req.user.email;
+        return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(userEmail);
     }
 };
 tslib_1.__decorate([
@@ -1119,15 +1131,232 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", []),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('recommendations/cars'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getRecommendedCars", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('recommendations/products'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getRecommendedProducts", null);
 exports.UserController = UserController = tslib_1.__decorate([
     (0, common_1.Controller)('user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object])
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object, typeof (_b = typeof neo4j_service_1.Neo4jService !== "undefined" && neo4j_service_1.Neo4jService) === "function" ? _b : Object])
 ], UserController);
 
 
 /***/ }),
 /* 34 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Neo4jService = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongodb_1 = __webpack_require__(35);
+const neo4j_driver_1 = tslib_1.__importDefault(__webpack_require__(36));
+let Neo4jService = exports.Neo4jService = class Neo4jService {
+    constructor() {
+        const mongoUri = process.env.MONGO_URI;
+        // MongoDB setup
+        this.mongoClient = new mongodb_1.MongoClient(mongoUri);
+        // Neo4j setup
+        const neo4jUri = process.env.NEO4J_URI;
+        const neo4jUser = process.env.NEO4J_USER;
+        const neo4jPassword = process.env.NEO4J_PASSWORD;
+        const neo4jDriver = neo4j_driver_1.default.driver(neo4jUri, neo4j_driver_1.default.auth.basic(neo4jUser, neo4jPassword));
+        this.neo4jSession = neo4jDriver.session();
+    }
+    async onModuleInit() {
+        console.log('Syncing data...');
+        await this.mongoClient.connect();
+        const database = this.mongoClient.db(process.env.MONGO_DB);
+        const collection = database.collection('users');
+        const changeStream = collection.watch();
+        changeStream.on('change', async (change) => {
+            console.log('Change detected:', change);
+            switch (change.operationType) {
+                case 'insert': {
+                    const newUser = change.fullDocument;
+                    await this.createOrUpdateUser(newUser);
+                    break;
+                }
+                case 'update': {
+                    const updatedFields = change.updateDescription.updatedFields;
+                    const userId = change.documentKey._id.toString();
+                    // Fetch the email from MongoDB
+                    const user = await this.mongoClient
+                        .db(process.env.MONGO_DB)
+                        .collection('users')
+                        .findOne({ _id: new mongodb_1.ObjectId(userId) });
+                    if (user) {
+                        await this.updateUser(user.email, updatedFields);
+                    }
+                    else {
+                        return 'User not found in MongoDB with _id: ' + userId;
+                    }
+                    break;
+                }
+                case 'delete': {
+                    const deletedUserId = change.documentKey._id.toString();
+                    // Fetch the email from MongoDB
+                    const user = await this.mongoClient
+                        .db(process.env.MONGO_DB)
+                        .collection('users')
+                        .findOne({ _id: new mongodb_1.ObjectId(deletedUserId) });
+                    if (user) {
+                        await this.deleteUser(deletedUserId);
+                    }
+                    else {
+                        return 'User not found in MongoDB with _id: ' + deletedUserId;
+                    }
+                    break;
+                }
+            }
+        });
+    }
+    async createOrUpdateUser(user) {
+        const query = `
+      MERGE (u:User {email: $email})
+      ON CREATE SET u.firstName = $firstName, u.lastName = $lastName, u.age = $age
+      ON MATCH SET u.firstName = COALESCE($firstName, u.firstName),
+                   u.lastName = COALESCE($lastName, u.lastName),
+                   u.age = COALESCE($age, u.age)
+    `;
+        await this.neo4jSession.run(query, {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            age: user.age,
+        });
+    }
+    async updateUser(userEmail, updatedFields) {
+        // Update user properties
+        const userPropertiesQuery = `
+      MATCH (u:User {email: $userEmail})
+      SET u += $updatedFields
+    `;
+        await this.neo4jSession.run(userPropertiesQuery, {
+            userEmail,
+            updatedFields,
+        });
+        // Check if 'following' field is updated and create relationships in Neo4j
+        if (updatedFields.following && updatedFields.following.length > 0) {
+            // The following field should contain an array of user email addresses
+            for (const followingUserInfo of updatedFields.following) {
+                const followingUserEmail = followingUserInfo.followingUser; // Adjust this if the structure is different
+                // Log the email addresses for debugging purposes
+                console.log(`Creating relationship: ${userEmail} FOLLOWS ${followingUserEmail}`);
+                // Create a FOLLOW relationship to the newly followed user
+                const followUserQuery = `
+        MATCH (currentUser:User {email: $userEmail})
+        MATCH (followedUser:User {email: $followingUserEmail})
+        MERGE (currentUser)-[:FOLLOWS]->(followedUser)
+      `;
+                try {
+                    await this.neo4jSession.run(followUserQuery, {
+                        userEmail,
+                        followingUserEmail,
+                    });
+                }
+                catch (error) {
+                    console.error('Error creating FOLLOW relationship:', error);
+                }
+            }
+        }
+    }
+    async deleteUser(userId) {
+        const query = `
+      MATCH (u:User {_id: $userId})
+      DETACH DELETE u
+    `;
+        await this.neo4jSession.run(query, { _id: new mongodb_1.ObjectId(userId) });
+    }
+    async recommendCarsBasedOnFollowedUserLikes(userEmail) {
+        // Match the current user and find cars liked by users they follow
+        const recommendCarsQuery = `
+      MATCH (currentUser:User {email: $userEmail})-[:FOLLOWS]->(followedUser)-[:LIKES_CAR]->(car)
+      WHERE NOT (currentUser)-[:LIKES_CAR]->(car)
+      RETURN car
+    `;
+        const carsResult = await this.neo4jSession.run(recommendCarsQuery, {
+            userEmail,
+        });
+        // Map the result to car properties and return
+        const recommendedCars = carsResult.records.map((record) => record.get('car').properties);
+        if (recommendedCars.length === 0) {
+            return 'No car recommendations available either because you are not following anyone or because the persons you follow do not have any liked cars.';
+        }
+        return recommendedCars;
+    }
+    async recommendProductsBasedOnFollowedUserLikes(userEmail) {
+        // Match the current user and find products liked by users they follow
+        const recommendProductsQuery = `
+      MATCH (currentUser:User {email: $userEmail})-[:FOLLOWS]->(followedUser)-[:LIKES_PRODUCT]->(product)
+      WHERE NOT (currentUser)-[:LIKES_PRODUCT]->(product)
+      RETURN product
+    `;
+        const productsResult = await this.neo4jSession.run(recommendProductsQuery, {
+            userEmail,
+        });
+        // Map the result to product properties and return
+        const recommendedProducts = productsResult.records.map((record) => record.get('product').properties);
+        if (recommendedProducts.length === 0) {
+            return 'No product recommendations available either because you are not following anyone or because the persons you follow do not have any liked products.';
+        }
+        return recommendedProducts;
+    }
+};
+exports.Neo4jService = Neo4jService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [])
+], Neo4jService);
+
+
+/***/ }),
+/* 35 */
+/***/ ((module) => {
+
+module.exports = require("mongodb");
+
+/***/ }),
+/* 36 */
+/***/ ((module) => {
+
+module.exports = require("neo4j-driver");
+
+/***/ }),
+/* 37 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Neo4jModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const config_1 = __webpack_require__(8);
+const neo4j_service_1 = __webpack_require__(34);
+let Neo4jModule = exports.Neo4jModule = class Neo4jModule {
+};
+exports.Neo4jModule = Neo4jModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [config_1.ConfigModule],
+        providers: [neo4j_service_1.Neo4jService],
+        exports: [neo4j_service_1.Neo4jService],
+    })
+], Neo4jModule);
+
+
+/***/ }),
+/* 38 */
 /***/ ((module) => {
 
 module.exports = require("passport");
@@ -1170,12 +1399,12 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(34));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(38));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
     app.use(passport_1.default.initialize());
-    app.useGlobalPipes(new common_1.ValidationPipe()); // Enable global validation pipe
+    app.useGlobalPipes(new common_1.ValidationPipe());
     const globalPrefix = 'api';
     app.setGlobalPrefix(globalPrefix);
     const port = process.env.PORT || 3000;

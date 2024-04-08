@@ -14,6 +14,7 @@ import { AuthService } from '../auth/auth.service';
 import { ProductController } from '../product/product.controller';
 import { ProductModule } from '../product/product.module';
 import { UserController } from '../user/user.controller';
+import { Neo4jModule } from '../neo4j/neo4j.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserController } from '../user/user.controller';
     UserModule,
     CarModule,
     ProductModule,
+    Neo4jModule,
   ],
   controllers: [
     AppController,

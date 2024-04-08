@@ -8,11 +8,15 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Neo4jService } from '../neo4j/neo4j.service';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private neo4jService: Neo4jService
+  ) {}
 
   @Post('follow')
   async follow(@Request() req, @Body() body: { followingUser: string }) {
@@ -62,5 +66,19 @@ export class UserController {
   @Get('all-users')
   async getAllUsers() {
     return this.userService.getAllUsers();
+  }
+
+  @Get('recommendations/cars')
+  async getRecommendedCars(@Request() req) {
+    const userEmail = req.user.email;
+    return this.neo4jService.recommendCarsBasedOnFollowedUserLikes(userEmail);
+  }
+
+  @Get('recommendations/products')
+  async getRecommendedProducts(@Request() req) {
+    const userEmail = req.user.email;
+    return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(
+      userEmail
+    );
   }
 }
