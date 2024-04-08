@@ -1078,11 +1078,11 @@ let UserController = exports.UserController = class UserController {
     }
     async getRecommendedCars(req) {
         const userEmail = req.user.email;
-        return this.neo4jService.recommendCarsBasedOnFollowedUserLikes(userEmail);
+        return this.neo4jService.recommendCars(userEmail);
     }
     async getRecommendedProducts(req) {
         const userEmail = req.user.email;
-        return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(userEmail);
+        return this.neo4jService.recommendProducts(userEmail);
     }
     async getOffersForCar(id) {
         return this.offerService.getOffersForCar(id);
@@ -1222,153 +1222,128 @@ const neo4j_driver_1 = tslib_1.__importDefault(__webpack_require__(36));
 let Neo4jService = exports.Neo4jService = class Neo4jService {
     constructor() {
         const mongoUri = process.env.MONGO_URI;
-        // MongoDB setup
         this.mongoClient = new mongodb_1.MongoClient(mongoUri);
-        // Neo4j setup
         const neo4jUri = process.env.NEO4J_URI;
         const neo4jUser = process.env.NEO4J_USER;
         const neo4jPassword = process.env.NEO4J_PASSWORD;
-        const neo4jDriver = neo4j_driver_1.default.driver(neo4jUri, neo4j_driver_1.default.auth.basic(neo4jUser, neo4jPassword));
-        this.neo4jSession = neo4jDriver.session();
+        this.neo4jDriver = neo4j_driver_1.default.driver(neo4jUri, neo4j_driver_1.default.auth.basic(neo4jUser, neo4jPassword));
     }
     async onModuleInit() {
-        console.log('Syncing data...');
         await this.mongoClient.connect();
         const database = this.mongoClient.db(process.env.MONGO_DB);
         const collection = database.collection('users');
         const changeStream = collection.watch();
         changeStream.on('change', async (change) => {
-            console.log('Change detected:', change);
-            switch (change.operationType) {
-                case 'insert': {
-                    const newUser = change.fullDocument;
-                    await this.createUser(newUser);
-                    break;
+            const userId = change.documentKey._id;
+            const user = await collection.findOne({ _id: new mongodb_1.ObjectId(userId) });
+            const session = this.neo4jDriver.session();
+            try {
+                switch (change.operationType) {
+                    case 'insert': {
+                        const newUser = change.fullDocument;
+                        await this.createUser(session, newUser.email);
+                        const likedCars = newUser.likedCars.map((car) => car.carId);
+                        const likedProducts = newUser.likedProducts.map((product) => product.productId);
+                        await this.updateUserLikes(session, newUser.email, likedCars, likedProducts);
+                        break;
+                    }
+                    case 'update': {
+                        if (!user) {
+                            return;
+                        }
+                        const updatedFields = change.updateDescription.updatedFields;
+                        const likedCars = user.likedCars.map((car) => car.carId);
+                        const likedProducts = user.likedProducts.map((product) => product.productId);
+                        await this.updateUserLikes(session, user.email, likedCars, likedProducts);
+                        if (updatedFields.following) {
+                            const followingUsers = updatedFields.following.map((f) => f.followingUser);
+                            await this.updateUserFollowing(session, user.email, followingUsers);
+                        }
+                        break;
+                    }
+                    case 'delete': {
+                        const userEmail = change.documentKey.email;
+                        await this.deleteUser(session, userEmail);
+                        break;
+                    }
                 }
-                case 'update': {
-                    const updatedFields = change.updateDescription.updatedFields;
-                    const userId = change.documentKey._id.toString();
-                    // Fetch the email from MongoDB
-                    const user = await this.mongoClient
-                        .db(process.env.MONGO_DB)
-                        .collection('users')
-                        .findOne({ _id: new mongodb_1.ObjectId(userId) });
-                    if (user) {
-                        await this.updateUser(user.email, updatedFields);
-                    }
-                    else {
-                        return 'User not found in MongoDB with _id: ' + userId;
-                    }
-                    break;
-                }
-                case 'delete': {
-                    const deletedUserId = change.documentKey._id.toString();
-                    // Fetch the email from MongoDB
-                    const user = await this.mongoClient
-                        .db(process.env.MONGO_DB)
-                        .collection('users')
-                        .findOne({ _id: new mongodb_1.ObjectId(deletedUserId) });
-                    if (user) {
-                        await this.deleteUser(deletedUserId);
-                    }
-                    else {
-                        return 'User not found in MongoDB with _id: ' + deletedUserId;
-                    }
-                    break;
-                }
+            }
+            finally {
+                await session.close();
             }
         });
     }
-    async createUser(user) {
+    async createUser(session, email) {
         const query = `
       MERGE (u:User {email: $email})
-      ON CREATE SET u.firstName = $firstName, u.lastName = $lastName, u.age = $age
-      ON MATCH SET u.firstName = COALESCE($firstName, u.firstName),
-                   u.lastName = COALESCE($lastName, u.lastName),
-                   u.age = COALESCE($age, u.age)
     `;
-        await this.neo4jSession.run(query, {
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            age: user.age,
-        });
+        await session.run(query, { email });
     }
-    async updateUser(userEmail, updatedFields) {
-        // Update user properties
-        const userPropertiesQuery = `
-      MATCH (u:User {email: $userEmail})
-      SET u += $updatedFields
-    `;
-        await this.neo4jSession.run(userPropertiesQuery, {
-            userEmail,
-            updatedFields,
-        });
-        // Check if 'following' field is updated and create relationships in Neo4j
-        if (updatedFields.following && updatedFields.following.length > 0) {
-            // The following field should contain an array of user email addresses
-            for (const followingUserInfo of updatedFields.following) {
-                const followingUserEmail = followingUserInfo.followingUser; // Adjust this if the structure is different
-                // Log the email addresses for debugging purposes
-                console.log(`Creating relationship: ${userEmail} FOLLOWS ${followingUserEmail}`);
-                // Create a FOLLOW relationship to the newly followed user
-                const followUserQuery = `
-        MATCH (currentUser:User {email: $userEmail})
-        MATCH (followedUser:User {email: $followingUserEmail})
-        MERGE (currentUser)-[:FOLLOWS]->(followedUser)
-      `;
-                try {
-                    await this.neo4jSession.run(followUserQuery, {
-                        userEmail,
-                        followingUserEmail,
-                    });
-                }
-                catch (error) {
-                    console.error('Error creating FOLLOW relationship:', error);
-                }
-            }
-        }
-    }
-    async deleteUser(userId) {
+    async updateUserLikes(session, email, likedCars, likedProducts) {
         const query = `
-      MATCH (u:User {_id: $userId})
+      MATCH (u:User {email: $email})
+      SET u.likedCars = $likedCars, u.likedProducts = $likedProducts
+    `;
+        await session.run(query, { email, likedCars, likedProducts });
+    }
+    async deleteUser(session, email) {
+        const query = `
+      MATCH (u:User {email: $email})
       DETACH DELETE u
     `;
-        await this.neo4jSession.run(query, { _id: new mongodb_1.ObjectId(userId) });
+        await session.run(query, { email });
     }
-    async recommendCarsBasedOnFollowedUserLikes(userEmail) {
-        // Match the current user and find cars liked by users they follow
-        const recommendCarsQuery = `
-      MATCH (currentUser:User {email: $userEmail})-[:FOLLOWS]->(followedUser)-[:LIKES_CAR]->(car)
-      WHERE NOT (currentUser)-[:LIKES_CAR]->(car)
-      RETURN car
-    `;
-        const carsResult = await this.neo4jSession.run(recommendCarsQuery, {
-            userEmail,
-        });
-        // Map the result to car properties and return
-        const recommendedCars = carsResult.records.map((record) => record.get('car').properties);
-        if (recommendedCars.length === 0) {
-            return 'No car recommendations available either because you are not following anyone or because the persons you follow do not have any liked cars.';
+    async updateUserFollowing(session, userEmail, following) {
+        for (const followingUserEmail of following) {
+            const query = `
+        MATCH (u:User {email: $userEmail})
+        MERGE (f:User {email: $followingUserEmail})
+        MERGE (u)-[:FOLLOWS]->(f)
+      `;
+            await session.run(query, { userEmail, followingUserEmail });
         }
-        return recommendedCars;
     }
-    async recommendProductsBasedOnFollowedUserLikes(userEmail) {
-        // Match the current user and find products liked by users they follow
-        const recommendProductsQuery = `
-      MATCH (currentUser:User {email: $userEmail})-[:FOLLOWS]->(followedUser)-[:LIKES_PRODUCT]->(product)
-      WHERE NOT (currentUser)-[:LIKES_PRODUCT]->(product)
-      RETURN product
-    `;
-        const productsResult = await this.neo4jSession.run(recommendProductsQuery, {
-            userEmail,
-        });
-        // Map the result to product properties and return
-        const recommendedProducts = productsResult.records.map((record) => record.get('product').properties);
-        if (recommendedProducts.length === 0) {
-            return 'No product recommendations available either because you are not following anyone or because the persons you follow do not have any liked products.';
+    async recommendCars(email) {
+        const session = this.neo4jDriver.session();
+        try {
+            const query = `
+        MATCH (u:User {email: $email})-[:FOLLOWS]->(f:User)
+        WITH u, collect(f.likedCars) AS friendsLikedCars
+        UNWIND friendsLikedCars AS friendLikedCar
+        WITH u, friendLikedCar
+        WHERE NOT friendLikedCar IN u.likedCars
+        RETURN DISTINCT friendLikedCar AS RecommendedCar
+      `;
+            const result = await session.run(query, { email });
+            if (result.records.length === 0) {
+                return "No recommendations found because you either don't follow anyone or none of your friends have liked any cars.";
+            }
+            return result.records.map((record) => record.get('RecommendedCar'));
         }
-        return recommendedProducts;
+        finally {
+            await session.close();
+        }
+    }
+    async recommendProducts(email) {
+        const session = this.neo4jDriver.session();
+        try {
+            const query = `
+        MATCH (u:User {email: $email})-[:FOLLOWS]->(f:User)
+        WITH u, collect(f.likedProducts) AS friendsLikedProducts
+        UNWIND friendsLikedProducts AS friendLikedProduct
+        WITH u, friendLikedProduct
+        WHERE NOT friendLikedProduct IN u.likedProducts
+        RETURN DISTINCT friendLikedProduct AS RecommendedProduct
+      `;
+            const result = await session.run(query, { email });
+            if (result.records.length === 0) {
+                return "No recommendations found because you either don't follow anyone or none of your friends have liked any products.";
+            }
+            return result.records.map((record) => record.get('RecommendedProduct'));
+        }
+        finally {
+            await session.close();
+        }
     }
 };
 exports.Neo4jService = Neo4jService = tslib_1.__decorate([

@@ -9,14 +9,50 @@ exports.__esModule = true;
 exports.UserProfileComponent = void 0;
 var core_1 = require("@angular/core");
 var UserProfileComponent = /** @class */ (function () {
-    function UserProfileComponent(userService) {
+    function UserProfileComponent(userService, carService, productService) {
         this.userService = userService;
+        this.carService = carService;
+        this.productService = productService;
         this.user = null;
+        this.recommendedCars = [];
+        this.recommendedProducts = [];
     }
     UserProfileComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.userService.getUserProfile().subscribe(function (user) {
             _this.user = user;
+            _this.fetchRecommendedCars();
+            _this.fetchRecommendedProducts();
+        });
+    };
+    UserProfileComponent.prototype.fetchRecommendedCars = function () {
+        var _this = this;
+        this.userService.recommendedCars().subscribe(function (recommendedCarsIds) {
+            var carIds = recommendedCarsIds.join(',').split(',');
+            carIds.forEach(function (carId) {
+                _this.carService.getCarById(carId).subscribe(function (car) {
+                    _this.recommendedCars.push(car);
+                }, function (error) {
+                    console.error('Failed to fetch recommended car:', error);
+                });
+            });
+        }, function (error) {
+            console.error('Failed to fetch recommended cars:', error);
+        });
+    };
+    UserProfileComponent.prototype.fetchRecommendedProducts = function () {
+        var _this = this;
+        this.userService.recommendedProducts().subscribe(function (recommendedProductsIds) {
+            var productIds = recommendedProductsIds.join(',').split(',');
+            productIds.forEach(function (productId) {
+                _this.productService.getProductById(productId).subscribe(function (product) {
+                    _this.recommendedProducts.push(product);
+                }, function (error) {
+                    console.error('Failed to fetch recommended product:', error);
+                });
+            });
+        }, function (error) {
+            console.error('Failed to fetch recommended products:', error);
         });
     };
     UserProfileComponent = __decorate([

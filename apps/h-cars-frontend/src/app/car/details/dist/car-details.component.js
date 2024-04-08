@@ -92,7 +92,7 @@ var CarDetailsComponent = /** @class */ (function () {
     };
     CarDetailsComponent.prototype.fetchOffersForCar = function (carId) {
         var _this = this;
-        console.log('Fetching offers for car with id: ', carId);
+        console;
         this.carService.getOffersForCar(carId).subscribe(function (offers) {
             _this.currentOffers = offers;
             console.log(offers);

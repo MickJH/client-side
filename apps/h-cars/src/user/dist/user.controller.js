@@ -141,7 +141,7 @@ var UserController = /** @class */ (function () {
             var userEmail;
             return __generator(this, function (_a) {
                 userEmail = req.user.email;
-                return [2 /*return*/, this.neo4jService.recommendCarsBasedOnFollowedUserLikes(userEmail)];
+                return [2 /*return*/, this.neo4jService.recommendCars(userEmail)];
             });
         });
     };
@@ -150,7 +150,7 @@ var UserController = /** @class */ (function () {
             var userEmail;
             return __generator(this, function (_a) {
                 userEmail = req.user.email;
-                return [2 /*return*/, this.neo4jService.recommendProductsBasedOnFollowedUserLikes(userEmail)];
+                return [2 /*return*/, this.neo4jService.recommendProducts(userEmail)];
             });
         });
     };

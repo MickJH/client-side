@@ -41,4 +41,18 @@ export class UserService {
       { headers }
     );
   }
+
+  recommendedCars(): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.get<any>(`${this.apiUrl}/user/recommendations/cars`, {
+      headers,
+    });
+  }
+
+  recommendedProducts(): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.get<any>(`${this.apiUrl}/user/recommendations/products`, {
+      headers,
+    });
+  }
 }

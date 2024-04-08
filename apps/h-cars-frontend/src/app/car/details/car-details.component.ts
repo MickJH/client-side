@@ -109,7 +109,7 @@ export class CarDetailsComponent implements OnInit {
   }
 
   fetchOffersForCar(carId: string): void {
-    console.log('Fetching offers for car with id: ', carId);
+    console;
     this.carService.getOffersForCar(carId).subscribe(
       (offers) => {
         this.currentOffers = offers;

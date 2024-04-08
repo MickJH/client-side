@@ -37,6 +37,18 @@ var UserService = /** @class */ (function () {
         var headers = this.getHeaders();
         return this.http.post(this.apiUrl + "/user/follow", { followingUser: userEmail }, { headers: headers });
     };
+    UserService.prototype.recommendedCars = function () {
+        var headers = this.getHeaders();
+        return this.http.get(this.apiUrl + "/user/recommendations/cars", {
+            headers: headers
+        });
+    };
+    UserService.prototype.recommendedProducts = function () {
+        var headers = this.getHeaders();
+        return this.http.get(this.apiUrl + "/user/recommendations/products", {
+            headers: headers
+        });
+    };
     UserService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

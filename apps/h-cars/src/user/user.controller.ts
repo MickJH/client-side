@@ -76,15 +76,13 @@ export class UserController {
   @Get('recommendations/cars')
   async getRecommendedCars(@Request() req) {
     const userEmail = req.user.email;
-    return this.neo4jService.recommendCarsBasedOnFollowedUserLikes(userEmail);
+    return this.neo4jService.recommendCars(userEmail);
   }
 
   @Get('recommendations/products')
   async getRecommendedProducts(@Request() req) {
     const userEmail = req.user.email;
-    return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(
-      userEmail
-    );
+    return this.neo4jService.recommendProducts(userEmail);
   }
 
   @Get('offers-for-car/:id')
