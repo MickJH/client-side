@@ -246,11 +246,11 @@ var UserController = /** @class */ (function () {
         __param(1, common_1.Body())
     ], UserController.prototype, "createOffer");
     __decorate([
-        common_1.Post('update-offer/:id'),
+        common_1.Put('update-offer/:id'),
         __param(0, common_1.Param('id')), __param(1, common_1.Body())
     ], UserController.prototype, "updateCar");
     __decorate([
-        common_1.Post('delete-offer/:id'),
+        common_1.Delete('delete-offer/:id'),
         __param(0, common_1.Param('id'))
     ], UserController.prototype, "deleteCar");
     UserController = __decorate([

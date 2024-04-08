@@ -43,7 +43,7 @@ export class ProductService {
 
   updateProduct(id: string, product: Product): Observable<Product> {
     const headers = this.getHeaders();
-    return this.http.post<Product>(
+    return this.http.put<Product>(
       `${this.apiUrl}/product/update/${id}`,
       product,
       {
@@ -54,11 +54,9 @@ export class ProductService {
 
   deleteProduct(id: string): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post<any>(
-      `${this.apiUrl}/product/delete/${id}`,
-      {},
-      { headers }
-    );
+    return this.http.delete<any>(`${this.apiUrl}/product/delete/${id}`, {
+      headers,
+    });
   }
 
   getUserProducts(): Observable<Product[]> {

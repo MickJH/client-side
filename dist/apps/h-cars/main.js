@@ -887,7 +887,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update/:id'),
+    (0, common_1.Put)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -896,7 +896,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "updateCar", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete/:id'),
+    (0, common_1.Delete)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -992,7 +992,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update/:id'),
+    (0, common_1.Put)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -1001,7 +1001,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "updateProduct", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete/:id'),
+    (0, common_1.Delete)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -1187,7 +1187,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "createOffer", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update-offer/:id'),
+    (0, common_1.Put)('update-offer/:id'),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
@@ -1195,7 +1195,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "updateCar", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete-offer/:id'),
+    (0, common_1.Delete)('delete-offer/:id'),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),

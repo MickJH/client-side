@@ -151,12 +151,12 @@ var ProductController = /** @class */ (function () {
         __param(0, common_1.Req())
     ], ProductController.prototype, "getMyCars");
     __decorate([
-        common_1.Post('update/:id'),
+        common_1.Put('update/:id'),
         common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
         __param(0, common_1.Param('id')), __param(1, common_1.Body())
     ], ProductController.prototype, "updateProduct");
     __decorate([
-        common_1.Post('delete/:id'),
+        common_1.Delete('delete/:id'),
         common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
         __param(0, common_1.Param('id'))
     ], ProductController.prototype, "deleteProduct");
