@@ -1084,10 +1084,6 @@ let UserController = exports.UserController = class UserController {
         const userEmail = req.user.email;
         return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(userEmail);
     }
-    async getOffers(req) {
-        const userEmail = req.user.email;
-        return this.offerService.getOffersForUser(userEmail);
-    }
     async getOffersForCar(id) {
         return this.offerService.getOffersForCar(id);
     }
@@ -1175,13 +1171,6 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "getRecommendedProducts", null);
-tslib_1.__decorate([
-    (0, common_1.Get)('user-coffers'),
-    tslib_1.__param(0, (0, common_1.Request)()),
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", Promise)
-], UserController.prototype, "getOffers", null);
 tslib_1.__decorate([
     (0, common_1.Get)('offers-for-car/:id'),
     tslib_1.__param(0, (0, common_1.Param)('id')),
@@ -1427,10 +1416,7 @@ let OfferService = exports.OfferService = class OfferService {
         return this.offerModel.findByIdAndDelete(id);
     }
     async getOffersForCar(carId) {
-        return this.offerModel.find({ car: carId });
-    }
-    async getOffersForUser(userId) {
-        return this.offerModel.find({ userId });
+        return this.offerModel.find({ carId: carId });
     }
 };
 exports.OfferService = OfferService = tslib_1.__decorate([

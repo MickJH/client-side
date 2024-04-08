@@ -64,6 +64,37 @@
       </div>
     </div>
 
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-12">
+          <form (ngSubmit)="placeOffer()">
+            <div class="form-group">
+              <label for="offerAmount">Offer Amount</label>
+              <input
+                type="number"
+                class="form-control"
+                id="offerAmount"
+                [(ngModel)]="offerAmount"
+                name="offerAmount"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-success">Submit Offer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4" *ngIf="currentOffers.length > 0">
+      <h5>Current Offers:</h5>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let offer of currentOffers">
+          <strong>User:</strong> {{ offer.user }} <strong>Price:</strong>
+          {{ offer.price | currency }}
+        </li>
+      </ul>
+    </div>
+
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>

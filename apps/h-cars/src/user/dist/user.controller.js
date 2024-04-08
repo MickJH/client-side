@@ -154,15 +154,6 @@ var UserController = /** @class */ (function () {
             });
         });
     };
-    UserController.prototype.getOffers = function (req) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userEmail;
-            return __generator(this, function (_a) {
-                userEmail = req.user.email;
-                return [2 /*return*/, this.offerService.getOffersForUser(userEmail)];
-            });
-        });
-    };
     UserController.prototype.getOffersForCar = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -245,10 +236,6 @@ var UserController = /** @class */ (function () {
         common_1.Get('recommendations/products'),
         __param(0, common_1.Request())
     ], UserController.prototype, "getRecommendedProducts");
-    __decorate([
-        common_1.Get('user-coffers'),
-        __param(0, common_1.Request())
-    ], UserController.prototype, "getOffers");
     __decorate([
         common_1.Get('offers-for-car/:id'),
         __param(0, common_1.Param('id'))

@@ -22,10 +22,6 @@ export class OfferService {
   }
 
   async getOffersForCar(carId: string): Promise<Offer[]> {
-    return this.offerModel.find({ car: carId });
-  }
-
-  async getOffersForUser(userId: string): Promise<Offer[]> {
-    return this.offerModel.find({ userId });
+    return this.offerModel.find({ carId: carId });
   }
 }

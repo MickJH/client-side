@@ -66,6 +66,17 @@ var CarService = /** @class */ (function () {
             headers: headers
         });
     };
+    CarService.prototype.placeOffer = function (carId, price) {
+        var headers = this.getHeaders();
+        var body = { carId: carId, price: price };
+        return this.http.post(this.apiUrl + "/user/offer", body, { headers: headers });
+    };
+    CarService.prototype.getOffersForCar = function (carId) {
+        var headers = this.getHeaders();
+        return this.http.get(this.apiUrl + "/user/offers-for-car/" + carId, {
+            headers: headers
+        });
+    };
     CarService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

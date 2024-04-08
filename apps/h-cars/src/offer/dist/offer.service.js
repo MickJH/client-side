@@ -78,14 +78,7 @@ var OfferService = /** @class */ (function () {
     OfferService.prototype.getOffersForCar = function (carId) {
         return __awaiter(this, void 0, Promise, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.offerModel.find({ car: carId })];
-            });
-        });
-    };
-    OfferService.prototype.getOffersForUser = function (userId) {
-        return __awaiter(this, void 0, Promise, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.offerModel.find({ userId: userId })];
+                return [2 /*return*/, this.offerModel.find({ carId: carId })];
             });
         });
     };

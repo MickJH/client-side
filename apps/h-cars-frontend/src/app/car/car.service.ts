@@ -75,4 +75,17 @@ export class CarService {
       headers,
     });
   }
+
+  placeOffer(carId: string, price: number): Observable<any> {
+    const headers = this.getHeaders();
+    const body = { carId, price };
+    return this.http.post<any>(`${this.apiUrl}/user/offer`, body, { headers });
+  }
+
+  getOffersForCar(carId: string): Observable<any[]> {
+    const headers = this.getHeaders();
+    return this.http.get<any[]>(`${this.apiUrl}/user/offers-for-car/${carId}`, {
+      headers,
+    });
+  }
 }

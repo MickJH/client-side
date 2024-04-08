@@ -11,6 +11,8 @@ import { CarService } from '../car.service';
 export class CarDetailsComponent implements OnInit {
   car: Car | null = null;
   errorMessage = '';
+  offerAmount = 0;
+  currentOffers: any[] = [];
 
   constructor(
     private carService: CarService,
@@ -24,6 +26,7 @@ export class CarDetailsComponent implements OnInit {
       if (carId) {
         this.carService.getCarById(carId).subscribe((car) => {
           this.car = car;
+          this.fetchOffersForCar(carId);
         });
       }
     });
@@ -70,6 +73,50 @@ export class CarDetailsComponent implements OnInit {
         } else {
           this.displayErrorMessage('Unexpected error during like operation');
         }
+      }
+    );
+  }
+
+  placeOffer(): void {
+    if (this.car) {
+      // Assume a method in CarService to submit the offer
+      if (this.car && this.car._id) {
+        this.carService.placeOffer(this.car._id, this.offerAmount).subscribe(
+          () => {
+            this.errorMessage = 'Offer placed successfully!';
+            this.offerAmount = 0;
+          },
+          (error) => {
+            if (
+              error.status === 400 &&
+              error.error.message === 'missing parameters'
+            ) {
+              this.displayErrorMessage('Missing parameters');
+            } else if (
+              error.status === 404 &&
+              error.error.message === 'car not found'
+            ) {
+              this.displayErrorMessage('Car not found');
+            } else {
+              this.displayErrorMessage(
+                'Unexpected error during offer placement'
+              );
+            }
+          }
+        );
+      }
+    }
+  }
+
+  fetchOffersForCar(carId: string): void {
+    console.log('Fetching offers for car with id: ', carId);
+    this.carService.getOffersForCar(carId).subscribe(
+      (offers) => {
+        this.currentOffers = offers;
+        console.log(offers);
+      },
+      (error) => {
+        this.displayErrorMessage('Failed to load offers.');
       }
     );
   }

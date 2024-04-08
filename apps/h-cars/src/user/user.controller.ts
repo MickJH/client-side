@@ -87,12 +87,6 @@ export class UserController {
     );
   }
 
-  @Get('user-coffers')
-  async getOffers(@Request() req) {
-    const userEmail = req.user.email;
-    return this.offerService.getOffersForUser(userEmail);
-  }
-
   @Get('offers-for-car/:id')
   async getOffersForCar(@Param('id') id: string) {
     return this.offerService.getOffersForCar(id);
