@@ -5,14 +5,23 @@ import {
   Request,
   Body,
   Get,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Neo4jService } from '../neo4j/neo4j.service';
+import { OfferService } from '../offer/offer.service';
+import { OfferDTO } from '../offer/offer.dto';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private neo4jService: Neo4jService,
+    private offerService: OfferService
+  ) {}
 
   @Post('follow')
   async follow(@Request() req, @Body() body: { followingUser: string }) {
@@ -62,5 +71,50 @@ export class UserController {
   @Get('all-users')
   async getAllUsers() {
     return this.userService.getAllUsers();
+  }
+
+  @Get('recommendations/cars')
+  async getRecommendedCars(@Request() req) {
+    const userEmail = req.user.email;
+    return this.neo4jService.recommendCars(userEmail);
+  }
+
+  @Get('recommendations/products')
+  async getRecommendedProducts(@Request() req) {
+    const userEmail = req.user.email;
+    return this.neo4jService.recommendProducts(userEmail);
+  }
+
+  @Get('offers-for-car/:id')
+  async getOffersForCar(@Param('id') id: string) {
+    return this.offerService.getOffersForCar(id);
+  }
+
+  @Post('offer')
+  async createOffer(
+    @Request() req,
+    @Body() body: { carId: string; price: number }
+  ) {
+    const userEmail = req.user.email;
+    const { carId, price } = body;
+
+    return this.offerService.createOffer({
+      carId: carId,
+      user: userEmail,
+      price,
+      createdAt: new Date(),
+    });
+  }
+
+  @Post('update-offer/:id')
+  async updateCar(@Param('id') id: string, @Body() offerDTO: OfferDTO) {
+    const updatedCar = await this.offerService.updateOffer(id, offerDTO);
+    return updatedCar;
+  }
+
+  @Post('delete-offer/:id')
+  async deleteCar(@Param('id') id: string) {
+    await this.offerService.deleteOffer(id);
+    return { message: 'Offer deleted successfully' };
   }
 }

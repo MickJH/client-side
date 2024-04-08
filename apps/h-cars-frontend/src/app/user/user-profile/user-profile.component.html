@@ -19,5 +19,31 @@
 
       <a class="btn btn-primary" [routerLink]="['/users']">All users</a>
     </div>
+
+    <div class="recommended-items">
+      <h2>Recommended Cars</h2>
+      <ul>
+        <li *ngFor="let car of recommendedCars">
+          <span>{{ car.carModel }}</span>
+          <a
+            class="btn btn-primary btn-recommendation"
+            [routerLink]="['/car/details/', car._id]"
+            >View Details</a
+          >
+        </li>
+      </ul>
+
+      <h2>Recommended Products</h2>
+      <ul>
+        <li *ngFor="let product of recommendedProducts">
+          <span>{{ product.name }}</span>
+          <a
+            class="btn btn-primary btn-recommendation"
+            [routerLink]="['/product/details/', product._id]"
+            >View Details</a
+          >
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

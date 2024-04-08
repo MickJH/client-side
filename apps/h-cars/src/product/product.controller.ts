@@ -14,14 +14,14 @@ import { ProductDTO } from './product.dto';
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
-  @Post('create-product')
+  @Post('create')
   @UseGuards(JwtAuthGuard)
   async createProduct(@Body() productDTO: ProductDTO) {
     const product = await this.productService.create(productDTO);
     return product;
   }
 
-  @Get('all-products')
+  @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllProducts() {
     const products = await this.productService.getAll();
@@ -43,14 +43,14 @@ export class ProductController {
     return products;
   }
 
-  @Post('update-product/:id')
+  @Post('update/:id')
   @UseGuards(JwtAuthGuard)
   async updateProduct(@Param('id') id: string, @Body() productDTO: ProductDTO) {
     const updatedProduct = await this.productService.update(id, productDTO);
     return updatedProduct;
   }
 
-  @Post('delete-product/:id')
+  @Post('delete/:id')
   @UseGuards(JwtAuthGuard)
   async deleteProduct(@Param('id') id: string) {
     await this.productService.delete(id);

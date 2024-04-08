@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-
 export enum Category {
   Electronic = 'Electronic',
   Liquid = 'Liquid',

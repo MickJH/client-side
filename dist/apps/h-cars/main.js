@@ -42,6 +42,8 @@ const auth_service_1 = __webpack_require__(19);
 const product_controller_1 = __webpack_require__(31);
 const product_module_1 = __webpack_require__(27);
 const user_controller_1 = __webpack_require__(33);
+const neo4j_module_1 = __webpack_require__(39);
+const offer_module_1 = __webpack_require__(40);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -52,6 +54,8 @@ exports.AppModule = AppModule = tslib_1.__decorate([
             user_module_1.UserModule,
             car_module_1.CarModule,
             product_module_1.ProductModule,
+            neo4j_module_1.Neo4jModule,
+            offer_module_1.OfferModule,
         ],
         controllers: [
             app_controller_1.AppController,
@@ -852,7 +856,7 @@ let CarController = exports.CarController = class CarController {
     }
 };
 tslib_1.__decorate([
-    (0, common_1.Post)('create-car'),
+    (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
@@ -860,7 +864,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "createCar", null);
 tslib_1.__decorate([
-    (0, common_1.Get)('all-cars'),
+    (0, common_1.Get)('all'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", []),
@@ -883,7 +887,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update-car/:id'),
+    (0, common_1.Post)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -892,7 +896,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "updateCar", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete-car/:id'),
+    (0, common_1.Post)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -957,7 +961,7 @@ let ProductController = exports.ProductController = class ProductController {
     }
 };
 tslib_1.__decorate([
-    (0, common_1.Post)('create-product'),
+    (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
@@ -965,7 +969,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "createProduct", null);
 tslib_1.__decorate([
-    (0, common_1.Get)('all-products'),
+    (0, common_1.Get)('all'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", []),
@@ -988,7 +992,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update-product/:id'),
+    (0, common_1.Post)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -997,7 +1001,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "updateProduct", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete-product/:id'),
+    (0, common_1.Post)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -1023,16 +1027,21 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a;
+var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserController = void 0;
 const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const user_service_1 = __webpack_require__(10);
 const jwt_auth_guard_1 = __webpack_require__(22);
+const neo4j_service_1 = __webpack_require__(34);
+const offer_service_1 = __webpack_require__(37);
+const offer_dto_1 = __webpack_require__(38);
 let UserController = exports.UserController = class UserController {
-    constructor(userService) {
+    constructor(userService, neo4jService, offerService) {
         this.userService = userService;
+        this.neo4jService = neo4jService;
+        this.offerService = offerService;
     }
     async follow(req, body) {
         const userEmail = req.user.email;
@@ -1066,6 +1075,35 @@ let UserController = exports.UserController = class UserController {
     }
     async getAllUsers() {
         return this.userService.getAllUsers();
+    }
+    async getRecommendedCars(req) {
+        const userEmail = req.user.email;
+        return this.neo4jService.recommendCars(userEmail);
+    }
+    async getRecommendedProducts(req) {
+        const userEmail = req.user.email;
+        return this.neo4jService.recommendProducts(userEmail);
+    }
+    async getOffersForCar(id) {
+        return this.offerService.getOffersForCar(id);
+    }
+    async createOffer(req, body) {
+        const userEmail = req.user.email;
+        const { carId, price } = body;
+        return this.offerService.createOffer({
+            carId: carId,
+            user: userEmail,
+            price,
+            createdAt: new Date(),
+        });
+    }
+    async updateCar(id, offerDTO) {
+        const updatedCar = await this.offerService.updateOffer(id, offerDTO);
+        return updatedCar;
+    }
+    async deleteCar(id) {
+        await this.offerService.deleteOffer(id);
+        return { message: 'Offer deleted successfully' };
     }
 };
 tslib_1.__decorate([
@@ -1119,15 +1157,324 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", []),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('recommendations/cars'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getRecommendedCars", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('recommendations/products'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getRecommendedProducts", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('offers-for-car/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getOffersForCar", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('offer'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object, Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "createOffer", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('update-offer/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, typeof (_d = typeof offer_dto_1.OfferDTO !== "undefined" && offer_dto_1.OfferDTO) === "function" ? _d : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "updateCar", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('delete-offer/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "deleteCar", null);
 exports.UserController = UserController = tslib_1.__decorate([
     (0, common_1.Controller)('user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object])
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object, typeof (_b = typeof neo4j_service_1.Neo4jService !== "undefined" && neo4j_service_1.Neo4jService) === "function" ? _b : Object, typeof (_c = typeof offer_service_1.OfferService !== "undefined" && offer_service_1.OfferService) === "function" ? _c : Object])
 ], UserController);
 
 
 /***/ }),
 /* 34 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Neo4jService = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongodb_1 = __webpack_require__(35);
+const neo4j_driver_1 = tslib_1.__importDefault(__webpack_require__(36));
+let Neo4jService = exports.Neo4jService = class Neo4jService {
+    constructor() {
+        const mongoUri = process.env.MONGO_URI;
+        this.mongoClient = new mongodb_1.MongoClient(mongoUri);
+        const neo4jUri = process.env.NEO4J_URI;
+        const neo4jUser = process.env.NEO4J_USER;
+        const neo4jPassword = process.env.NEO4J_PASSWORD;
+        this.neo4jDriver = neo4j_driver_1.default.driver(neo4jUri, neo4j_driver_1.default.auth.basic(neo4jUser, neo4jPassword));
+    }
+    async onModuleInit() {
+        await this.mongoClient.connect();
+        const database = this.mongoClient.db(process.env.MONGO_DB);
+        const collection = database.collection('users');
+        const changeStream = collection.watch();
+        changeStream.on('change', async (change) => {
+            const userId = change.documentKey._id;
+            const user = await collection.findOne({ _id: new mongodb_1.ObjectId(userId) });
+            const session = this.neo4jDriver.session();
+            try {
+                switch (change.operationType) {
+                    case 'insert': {
+                        const newUser = change.fullDocument;
+                        await this.createUser(session, newUser.email);
+                        const likedCars = newUser.likedCars.map((car) => car.carId);
+                        const likedProducts = newUser.likedProducts.map((product) => product.productId);
+                        await this.updateUserLikes(session, newUser.email, likedCars, likedProducts);
+                        break;
+                    }
+                    case 'update': {
+                        if (!user) {
+                            return;
+                        }
+                        const updatedFields = change.updateDescription.updatedFields;
+                        const likedCars = user.likedCars.map((car) => car.carId);
+                        const likedProducts = user.likedProducts.map((product) => product.productId);
+                        await this.updateUserLikes(session, user.email, likedCars, likedProducts);
+                        if (updatedFields.following) {
+                            const followingUsers = updatedFields.following.map((f) => f.followingUser);
+                            await this.updateUserFollowing(session, user.email, followingUsers);
+                        }
+                        break;
+                    }
+                    case 'delete': {
+                        const userEmail = change.documentKey.email;
+                        await this.deleteUser(session, userEmail);
+                        break;
+                    }
+                }
+            }
+            finally {
+                await session.close();
+            }
+        });
+    }
+    async createUser(session, email) {
+        const query = `
+      MERGE (u:User {email: $email})
+    `;
+        await session.run(query, { email });
+    }
+    async updateUserLikes(session, email, likedCars, likedProducts) {
+        const query = `
+      MATCH (u:User {email: $email})
+      SET u.likedCars = $likedCars, u.likedProducts = $likedProducts
+    `;
+        await session.run(query, { email, likedCars, likedProducts });
+    }
+    async deleteUser(session, email) {
+        const query = `
+      MATCH (u:User {email: $email})
+      DETACH DELETE u
+    `;
+        await session.run(query, { email });
+    }
+    async updateUserFollowing(session, userEmail, following) {
+        for (const followingUserEmail of following) {
+            const query = `
+        MATCH (u:User {email: $userEmail})
+        MERGE (f:User {email: $followingUserEmail})
+        MERGE (u)-[:FOLLOWS]->(f)
+      `;
+            await session.run(query, { userEmail, followingUserEmail });
+        }
+    }
+    async recommendCars(email) {
+        const session = this.neo4jDriver.session();
+        try {
+            const query = `
+        MATCH (u:User {email: $email})-[:FOLLOWS]->(f:User)
+        WITH u, collect(f.likedCars) AS friendsLikedCars
+        UNWIND friendsLikedCars AS friendLikedCar
+        WITH u, friendLikedCar
+        WHERE NOT friendLikedCar IN u.likedCars
+        RETURN DISTINCT friendLikedCar AS RecommendedCar
+      `;
+            const result = await session.run(query, { email });
+            if (result.records.length === 0) {
+                return "No recommendations found because you either don't follow anyone or none of your friends have liked any cars.";
+            }
+            return result.records.map((record) => record.get('RecommendedCar'));
+        }
+        finally {
+            await session.close();
+        }
+    }
+    async recommendProducts(email) {
+        const session = this.neo4jDriver.session();
+        try {
+            const query = `
+        MATCH (u:User {email: $email})-[:FOLLOWS]->(f:User)
+        WITH u, collect(f.likedProducts) AS friendsLikedProducts
+        UNWIND friendsLikedProducts AS friendLikedProduct
+        WITH u, friendLikedProduct
+        WHERE NOT friendLikedProduct IN u.likedProducts
+        RETURN DISTINCT friendLikedProduct AS RecommendedProduct
+      `;
+            const result = await session.run(query, { email });
+            if (result.records.length === 0) {
+                return "No recommendations found because you either don't follow anyone or none of your friends have liked any products.";
+            }
+            return result.records.map((record) => record.get('RecommendedProduct'));
+        }
+        finally {
+            await session.close();
+        }
+    }
+};
+exports.Neo4jService = Neo4jService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [])
+], Neo4jService);
+
+
+/***/ }),
+/* 35 */
+/***/ ((module) => {
+
+module.exports = require("mongodb");
+
+/***/ }),
+/* 36 */
+/***/ ((module) => {
+
+module.exports = require("neo4j-driver");
+
+/***/ }),
+/* 37 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferService = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const mongoose_2 = __webpack_require__(12);
+let OfferService = exports.OfferService = class OfferService {
+    constructor(offerModel) {
+        this.offerModel = offerModel;
+    }
+    async createOffer(offerDTO) {
+        const createdOffer = new this.offerModel(offerDTO);
+        return createdOffer.save();
+    }
+    async updateOffer(id, offerDTO) {
+        return this.offerModel.findByIdAndUpdate(id, offerDTO, { new: true });
+    }
+    async deleteOffer(id) {
+        return this.offerModel.findByIdAndDelete(id);
+    }
+    async getOffersForCar(carId) {
+        return this.offerModel.find({ carId: carId });
+    }
+};
+exports.OfferService = OfferService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)('Offer')),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _a : Object])
+], OfferService);
+
+
+/***/ }),
+/* 38 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+/* 39 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Neo4jModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const config_1 = __webpack_require__(8);
+const neo4j_service_1 = __webpack_require__(34);
+let Neo4jModule = exports.Neo4jModule = class Neo4jModule {
+};
+exports.Neo4jModule = Neo4jModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [config_1.ConfigModule],
+        providers: [neo4j_service_1.Neo4jService],
+        exports: [neo4j_service_1.Neo4jService],
+    })
+], Neo4jModule);
+
+
+/***/ }),
+/* 40 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const offer_schema_1 = __webpack_require__(41);
+const offer_service_1 = __webpack_require__(37);
+let OfferModule = exports.OfferModule = class OfferModule {
+};
+exports.OfferModule = OfferModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'Offer', schema: offer_schema_1.OfferSchema }]),
+        ],
+        providers: [offer_service_1.OfferService],
+        exports: [offer_service_1.OfferService],
+    })
+], OfferModule);
+
+
+/***/ }),
+/* 41 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferSchema = void 0;
+const tslib_1 = __webpack_require__(1);
+const mongoose = tslib_1.__importStar(__webpack_require__(12));
+exports.OfferSchema = new mongoose.Schema({
+    carId: { type: String, ref: 'Car', required: true },
+    user: { type: String, ref: 'User', required: true },
+    price: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+});
+
+
+/***/ }),
+/* 42 */
 /***/ ((module) => {
 
 module.exports = require("passport");
@@ -1170,12 +1517,12 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(34));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(42));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
     app.use(passport_1.default.initialize());
-    app.useGlobalPipes(new common_1.ValidationPipe()); // Enable global validation pipe
+    app.useGlobalPipes(new common_1.ValidationPipe());
     const globalPrefix = 'api';
     app.setGlobalPrefix(globalPrefix);
     const port = process.env.PORT || 3000;

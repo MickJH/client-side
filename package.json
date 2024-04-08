@@ -36,6 +36,7 @@
     "jasmine": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.4",
+    "neo4j-driver": "^5.19.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

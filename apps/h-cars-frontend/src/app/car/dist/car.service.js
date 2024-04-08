@@ -6,73 +6,82 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.ProductService = void 0;
+exports.CarService = void 0;
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
-var ProductService = /** @class */ (function () {
-    function ProductService(http) {
+var CarService = /** @class */ (function () {
+    function CarService(http) {
         this.http = http;
         this.apiUrl = 'https://h-cars-backend.azurewebsites.net/api';
     }
-    ProductService.prototype.getHeaders = function () {
+    CarService.prototype.getHeaders = function () {
         var token = localStorage.getItem('token');
         return new http_1.HttpHeaders({
             'Content-Type': 'application/json',
             Authorization: "Bearer " + token
         });
     };
-    ProductService.prototype.getAllProducts = function () {
+    CarService.prototype.getAllCars = function () {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/product/all", {
+        return this.http.get(this.apiUrl + "/car/all", {
             headers: headers
         });
     };
-    ProductService.prototype.getProductById = function (id) {
+    CarService.prototype.getCarById = function (id) {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/product/id/" + id, {
+        return this.http.get(this.apiUrl + "/car/id/" + id, {
             headers: headers
         });
     };
-    ProductService.prototype.createProduct = function (product) {
+    CarService.prototype.createCar = function (car) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/product/create", product, {
+        return this.http.post(this.apiUrl + "/car/create", car, {
             headers: headers
         });
     };
-    ProductService.prototype.updateProduct = function (id, product) {
+    CarService.prototype.updateCar = function (id, car) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/product/update/" + id, product, {
+        return this.http.post(this.apiUrl + "/car/update/" + id, car, {
             headers: headers
         });
     };
-    ProductService.prototype.deleteProduct = function (id) {
+    CarService.prototype.deleteCar = function (id) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/product/delete/" + id, {}, { headers: headers });
+        return this.http.post(this.apiUrl + "/car/delete/" + id, {}, { headers: headers });
     };
-    ProductService.prototype.getUserProducts = function () {
+    CarService.prototype.getUserCars = function () {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/product/my-products", {
+        return this.http.get(this.apiUrl + "/car/my-cars", { headers: headers });
+    };
+    CarService.prototype.likeCar = function (carId) {
+        var headers = this.getHeaders();
+        var body = { carId: carId };
+        return this.http.post(this.apiUrl + "/user/like-car", body, {
             headers: headers
         });
     };
-    ProductService.prototype.likeProduct = function (productId) {
+    CarService.prototype.getLikedCars = function () {
         var headers = this.getHeaders();
-        var body = { productId: productId };
-        return this.http.post(this.apiUrl + "/user/like-product", body, {
+        return this.http.get(this.apiUrl + "/user/liked-cars", {
             headers: headers
         });
     };
-    ProductService.prototype.getLikedProducts = function () {
+    CarService.prototype.placeOffer = function (carId, price) {
         var headers = this.getHeaders();
-        return this.http.get(this.apiUrl + "/user/liked-products", {
+        var body = { carId: carId, price: price };
+        return this.http.post(this.apiUrl + "/user/offer", body, { headers: headers });
+    };
+    CarService.prototype.getOffersForCar = function (carId) {
+        var headers = this.getHeaders();
+        return this.http.get(this.apiUrl + "/user/offers-for-car/" + carId, {
             headers: headers
         });
     };
-    ProductService = __decorate([
+    CarService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         })
-    ], ProductService);
-    return ProductService;
+    ], CarService);
+    return CarService;
 }());
-exports.ProductService = ProductService;
+exports.CarService = CarService;
