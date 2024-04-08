@@ -42,18 +42,16 @@ export class CarService {
 
   updateCar(id: string, car: Car): Observable<Car> {
     const headers = this.getHeaders();
-    return this.http.post<Car>(`${this.apiUrl}/car/update/${id}`, car, {
+    return this.http.put<Car>(`${this.apiUrl}/car/update/${id}`, car, {
       headers,
     });
   }
 
   deleteCar(id: string): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post<any>(
-      `${this.apiUrl}/car/delete/${id}`,
-      {},
-      { headers }
-    );
+    return this.http.delete<any>(`${this.apiUrl}/car/delete/${id}`, {
+      headers,
+    });
   }
 
   getUserCars(): Observable<Car[]> {

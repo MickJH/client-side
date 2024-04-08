@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -43,14 +45,14 @@ export class CarController {
     return cars;
   }
 
-  @Post('update/:id')
+  @Put('update/:id')
   @UseGuards(JwtAuthGuard)
   async updateCar(@Param('id') id: string, @Body() carDTO: CarDTO) {
     const updatedCar = await this.carService.update(id, carDTO);
     return updatedCar;
   }
 
-  @Post('delete/:id')
+  @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)
   async deleteCar(@Param('id') id: string) {
     await this.carService.delete(id);

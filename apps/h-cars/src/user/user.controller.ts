@@ -7,6 +7,7 @@ import {
   Get,
   Put,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -106,13 +107,13 @@ export class UserController {
     });
   }
 
-  @Post('update-offer/:id')
+  @Put('update-offer/:id')
   async updateCar(@Param('id') id: string, @Body() offerDTO: OfferDTO) {
     const updatedCar = await this.offerService.updateOffer(id, offerDTO);
     return updatedCar;
   }
 
-  @Post('delete-offer/:id')
+  @Delete('delete-offer/:id')
   async deleteCar(@Param('id') id: string) {
     await this.offerService.deleteOffer(id);
     return { message: 'Offer deleted successfully' };

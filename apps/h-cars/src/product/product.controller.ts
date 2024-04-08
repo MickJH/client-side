@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -43,14 +45,14 @@ export class ProductController {
     return products;
   }
 
-  @Post('update/:id')
+  @Put('update/:id')
   @UseGuards(JwtAuthGuard)
   async updateProduct(@Param('id') id: string, @Body() productDTO: ProductDTO) {
     const updatedProduct = await this.productService.update(id, productDTO);
     return updatedProduct;
   }
 
-  @Post('delete/:id')
+  @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)
   async deleteProduct(@Param('id') id: string) {
     await this.productService.delete(id);

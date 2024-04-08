@@ -41,13 +41,15 @@ var ProductService = /** @class */ (function () {
     };
     ProductService.prototype.updateProduct = function (id, product) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/product/update/" + id, product, {
+        return this.http.put(this.apiUrl + "/product/update/" + id, product, {
             headers: headers
         });
     };
     ProductService.prototype.deleteProduct = function (id) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/product/delete/" + id, {}, { headers: headers });
+        return this.http["delete"](this.apiUrl + "/product/delete/" + id, {
+            headers: headers
+        });
     };
     ProductService.prototype.getUserProducts = function () {
         var headers = this.getHeaders();

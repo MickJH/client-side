@@ -41,13 +41,15 @@ var CarService = /** @class */ (function () {
     };
     CarService.prototype.updateCar = function (id, car) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/car/update/" + id, car, {
+        return this.http.put(this.apiUrl + "/car/update/" + id, car, {
             headers: headers
         });
     };
     CarService.prototype.deleteCar = function (id) {
         var headers = this.getHeaders();
-        return this.http.post(this.apiUrl + "/car/delete/" + id, {}, { headers: headers });
+        return this.http["delete"](this.apiUrl + "/car/delete/" + id, {
+            headers: headers
+        });
     };
     CarService.prototype.getUserCars = function () {
         var headers = this.getHeaders();

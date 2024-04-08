@@ -151,12 +151,12 @@ var CarController = /** @class */ (function () {
         __param(0, common_1.Req())
     ], CarController.prototype, "getMyCars");
     __decorate([
-        common_1.Post('update/:id'),
+        common_1.Put('update/:id'),
         common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
         __param(0, common_1.Param('id')), __param(1, common_1.Body())
     ], CarController.prototype, "updateCar");
     __decorate([
-        common_1.Post('delete/:id'),
+        common_1.Delete('delete/:id'),
         common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
         __param(0, common_1.Param('id'))
     ], CarController.prototype, "deleteCar");
