@@ -21,7 +21,7 @@ export class CarService {
 
   getAllCars(): Observable<Car[]> {
     const headers = this.getHeaders();
-    return this.http.get<Car[]>(`${this.apiUrl}/car/all-cars`, {
+    return this.http.get<Car[]>(`${this.apiUrl}/car/all`, {
       headers,
     });
   }
@@ -35,14 +35,14 @@ export class CarService {
 
   createCar(car: Car): Observable<Car> {
     const headers = this.getHeaders();
-    return this.http.post<Car>(`${this.apiUrl}/car/create-car`, car, {
+    return this.http.post<Car>(`${this.apiUrl}/car/create`, car, {
       headers,
     });
   }
 
   updateCar(id: string, car: Car): Observable<Car> {
     const headers = this.getHeaders();
-    return this.http.post<Car>(`${this.apiUrl}/car/update-car/${id}`, car, {
+    return this.http.post<Car>(`${this.apiUrl}/car/update/${id}`, car, {
       headers,
     });
   }
@@ -50,7 +50,7 @@ export class CarService {
   deleteCar(id: string): Observable<any> {
     const headers = this.getHeaders();
     return this.http.post<any>(
-      `${this.apiUrl}/car/delete-car/${id}`,
+      `${this.apiUrl}/car/delete/${id}`,
       {},
       { headers }
     );

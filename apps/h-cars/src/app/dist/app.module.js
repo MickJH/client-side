@@ -23,6 +23,7 @@ var product_controller_1 = require("../product/product.controller");
 var product_module_1 = require("../product/product.module");
 var user_controller_1 = require("../user/user.controller");
 var neo4j_module_1 = require("../neo4j/neo4j.module");
+var offer_module_1 = require("../offer/offer.module");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -35,6 +36,7 @@ var AppModule = /** @class */ (function () {
                 car_module_1.CarModule,
                 product_module_1.ProductModule,
                 neo4j_module_1.Neo4jModule,
+                offer_module_1.OfferModule,
             ],
             controllers: [
                 app_controller_1.AppController,

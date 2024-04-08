@@ -15,6 +15,7 @@ import { ProductController } from '../product/product.controller';
 import { ProductModule } from '../product/product.module';
 import { UserController } from '../user/user.controller';
 import { Neo4jModule } from '../neo4j/neo4j.module';
+import { OfferModule } from '../offer/offer.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Neo4jModule } from '../neo4j/neo4j.module';
     CarModule,
     ProductModule,
     Neo4jModule,
+    OfferModule,
   ],
   controllers: [
     AppController,

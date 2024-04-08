@@ -22,7 +22,7 @@ export class ProductService {
 
   getAllProducts(): Observable<Product[]> {
     const headers = this.getHeaders();
-    return this.http.get<Product[]>(`${this.apiUrl}/product/all-products`, {
+    return this.http.get<Product[]>(`${this.apiUrl}/product/all`, {
       headers,
     });
   }
@@ -36,19 +36,15 @@ export class ProductService {
 
   createProduct(product: Product): Observable<Product> {
     const headers = this.getHeaders();
-    return this.http.post<Product>(
-      `${this.apiUrl}/product/create-product`,
-      product,
-      {
-        headers,
-      }
-    );
+    return this.http.post<Product>(`${this.apiUrl}/product/create`, product, {
+      headers,
+    });
   }
 
   updateProduct(id: string, product: Product): Observable<Product> {
     const headers = this.getHeaders();
     return this.http.post<Product>(
-      `${this.apiUrl}/product/update-product/${id}`,
+      `${this.apiUrl}/product/update/${id}`,
       product,
       {
         headers,
@@ -59,7 +55,7 @@ export class ProductService {
   deleteProduct(id: string): Observable<any> {
     const headers = this.getHeaders();
     return this.http.post<any>(
-      `${this.apiUrl}/product/delete-product/${id}`,
+      `${this.apiUrl}/product/delete/${id}`,
       {},
       { headers }
     );

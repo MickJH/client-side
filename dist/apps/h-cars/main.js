@@ -42,7 +42,8 @@ const auth_service_1 = __webpack_require__(19);
 const product_controller_1 = __webpack_require__(31);
 const product_module_1 = __webpack_require__(27);
 const user_controller_1 = __webpack_require__(33);
-const neo4j_module_1 = __webpack_require__(37);
+const neo4j_module_1 = __webpack_require__(39);
+const offer_module_1 = __webpack_require__(40);
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = tslib_1.__decorate([
@@ -54,6 +55,7 @@ exports.AppModule = AppModule = tslib_1.__decorate([
             car_module_1.CarModule,
             product_module_1.ProductModule,
             neo4j_module_1.Neo4jModule,
+            offer_module_1.OfferModule,
         ],
         controllers: [
             app_controller_1.AppController,
@@ -854,7 +856,7 @@ let CarController = exports.CarController = class CarController {
     }
 };
 tslib_1.__decorate([
-    (0, common_1.Post)('create-car'),
+    (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
@@ -862,7 +864,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "createCar", null);
 tslib_1.__decorate([
-    (0, common_1.Get)('all-cars'),
+    (0, common_1.Get)('all'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", []),
@@ -885,7 +887,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update-car/:id'),
+    (0, common_1.Post)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -894,7 +896,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], CarController.prototype, "updateCar", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete-car/:id'),
+    (0, common_1.Post)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -959,7 +961,7 @@ let ProductController = exports.ProductController = class ProductController {
     }
 };
 tslib_1.__decorate([
-    (0, common_1.Post)('create-product'),
+    (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
@@ -967,7 +969,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "createProduct", null);
 tslib_1.__decorate([
-    (0, common_1.Get)('all-products'),
+    (0, common_1.Get)('all'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", []),
@@ -990,7 +992,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "getMyCars", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('update-product/:id'),
+    (0, common_1.Post)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__param(1, (0, common_1.Body)()),
@@ -999,7 +1001,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", Promise)
 ], ProductController.prototype, "updateProduct", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('delete-product/:id'),
+    (0, common_1.Post)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
@@ -1025,7 +1027,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a, _b;
+var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserController = void 0;
 const tslib_1 = __webpack_require__(1);
@@ -1033,10 +1035,13 @@ const common_1 = __webpack_require__(2);
 const user_service_1 = __webpack_require__(10);
 const jwt_auth_guard_1 = __webpack_require__(22);
 const neo4j_service_1 = __webpack_require__(34);
+const offer_service_1 = __webpack_require__(37);
+const offer_dto_1 = __webpack_require__(38);
 let UserController = exports.UserController = class UserController {
-    constructor(userService, neo4jService) {
+    constructor(userService, neo4jService, offerService) {
         this.userService = userService;
         this.neo4jService = neo4jService;
+        this.offerService = offerService;
     }
     async follow(req, body) {
         const userEmail = req.user.email;
@@ -1078,6 +1083,31 @@ let UserController = exports.UserController = class UserController {
     async getRecommendedProducts(req) {
         const userEmail = req.user.email;
         return this.neo4jService.recommendProductsBasedOnFollowedUserLikes(userEmail);
+    }
+    async getOffers(req) {
+        const userEmail = req.user.email;
+        return this.offerService.getOffersForUser(userEmail);
+    }
+    async getOffersForCar(id) {
+        return this.offerService.getOffersForCar(id);
+    }
+    async createOffer(req, body) {
+        const userEmail = req.user.email;
+        const { carId, price } = body;
+        return this.offerService.createOffer({
+            carId: carId,
+            user: userEmail,
+            price,
+            createdAt: new Date(),
+        });
+    }
+    async updateCar(id, offerDTO) {
+        const updatedCar = await this.offerService.updateOffer(id, offerDTO);
+        return updatedCar;
+    }
+    async deleteCar(id) {
+        await this.offerService.deleteOffer(id);
+        return { message: 'Offer deleted successfully' };
     }
 };
 tslib_1.__decorate([
@@ -1145,10 +1175,47 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object]),
     tslib_1.__metadata("design:returntype", Promise)
 ], UserController.prototype, "getRecommendedProducts", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('user-coffers'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getOffers", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('offers-for-car/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "getOffersForCar", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('offer'),
+    tslib_1.__param(0, (0, common_1.Request)()),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object, Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "createOffer", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('update-offer/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, typeof (_d = typeof offer_dto_1.OfferDTO !== "undefined" && offer_dto_1.OfferDTO) === "function" ? _d : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "updateCar", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('delete-offer/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", Promise)
+], UserController.prototype, "deleteCar", null);
 exports.UserController = UserController = tslib_1.__decorate([
     (0, common_1.Controller)('user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object, typeof (_b = typeof neo4j_service_1.Neo4jService !== "undefined" && neo4j_service_1.Neo4jService) === "function" ? _b : Object])
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_service_1.UserService !== "undefined" && user_service_1.UserService) === "function" ? _a : Object, typeof (_b = typeof neo4j_service_1.Neo4jService !== "undefined" && neo4j_service_1.Neo4jService) === "function" ? _b : Object, typeof (_c = typeof offer_service_1.OfferService !== "undefined" && offer_service_1.OfferService) === "function" ? _c : Object])
 ], UserController);
 
 
@@ -1186,7 +1253,7 @@ let Neo4jService = exports.Neo4jService = class Neo4jService {
             switch (change.operationType) {
                 case 'insert': {
                     const newUser = change.fullDocument;
-                    await this.createOrUpdateUser(newUser);
+                    await this.createUser(newUser);
                     break;
                 }
                 case 'update': {
@@ -1223,7 +1290,7 @@ let Neo4jService = exports.Neo4jService = class Neo4jService {
             }
         });
     }
-    async createOrUpdateUser(user) {
+    async createUser(user) {
         const query = `
       MERGE (u:User {email: $email})
       ON CREATE SET u.firstName = $firstName, u.lastName = $lastName, u.age = $age
@@ -1338,6 +1405,54 @@ module.exports = require("neo4j-driver");
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferService = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const mongoose_2 = __webpack_require__(12);
+let OfferService = exports.OfferService = class OfferService {
+    constructor(offerModel) {
+        this.offerModel = offerModel;
+    }
+    async createOffer(offerDTO) {
+        const createdOffer = new this.offerModel(offerDTO);
+        return createdOffer.save();
+    }
+    async updateOffer(id, offerDTO) {
+        return this.offerModel.findByIdAndUpdate(id, offerDTO, { new: true });
+    }
+    async deleteOffer(id) {
+        return this.offerModel.findByIdAndDelete(id);
+    }
+    async getOffersForCar(carId) {
+        return this.offerModel.find({ car: carId });
+    }
+    async getOffersForUser(userId) {
+        return this.offerModel.find({ userId });
+    }
+};
+exports.OfferService = OfferService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)('Offer')),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _a : Object])
+], OfferService);
+
+
+/***/ }),
+/* 38 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+/* 39 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Neo4jModule = void 0;
 const tslib_1 = __webpack_require__(1);
@@ -1356,7 +1471,49 @@ exports.Neo4jModule = Neo4jModule = tslib_1.__decorate([
 
 
 /***/ }),
-/* 38 */
+/* 40 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferModule = void 0;
+const tslib_1 = __webpack_require__(1);
+const common_1 = __webpack_require__(2);
+const mongoose_1 = __webpack_require__(11);
+const offer_schema_1 = __webpack_require__(41);
+const offer_service_1 = __webpack_require__(37);
+let OfferModule = exports.OfferModule = class OfferModule {
+};
+exports.OfferModule = OfferModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'Offer', schema: offer_schema_1.OfferSchema }]),
+        ],
+        providers: [offer_service_1.OfferService],
+        exports: [offer_service_1.OfferService],
+    })
+], OfferModule);
+
+
+/***/ }),
+/* 41 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OfferSchema = void 0;
+const tslib_1 = __webpack_require__(1);
+const mongoose = tslib_1.__importStar(__webpack_require__(12));
+exports.OfferSchema = new mongoose.Schema({
+    carId: { type: String, ref: 'Car', required: true },
+    user: { type: String, ref: 'User', required: true },
+    price: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+});
+
+
+/***/ }),
+/* 42 */
 /***/ ((module) => {
 
 module.exports = require("passport");
@@ -1399,7 +1556,7 @@ const tslib_1 = __webpack_require__(1);
 const common_1 = __webpack_require__(2);
 const core_1 = __webpack_require__(3);
 const app_module_1 = __webpack_require__(4);
-const passport_1 = tslib_1.__importDefault(__webpack_require__(38));
+const passport_1 = tslib_1.__importDefault(__webpack_require__(42));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();

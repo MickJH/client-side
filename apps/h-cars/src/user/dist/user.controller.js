@@ -49,9 +49,10 @@ exports.UserController = void 0;
 var common_1 = require("@nestjs/common");
 var jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 var UserController = /** @class */ (function () {
-    function UserController(userService, neo4jService) {
+    function UserController(userService, neo4jService, offerService) {
         this.userService = userService;
         this.neo4jService = neo4jService;
+        this.offerService = offerService;
     }
     UserController.prototype.follow = function (req, body) {
         return __awaiter(this, void 0, void 0, function () {
@@ -153,6 +154,62 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype.getOffers = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userEmail;
+            return __generator(this, function (_a) {
+                userEmail = req.user.email;
+                return [2 /*return*/, this.offerService.getOffersForUser(userEmail)];
+            });
+        });
+    };
+    UserController.prototype.getOffersForCar = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.offerService.getOffersForCar(id)];
+            });
+        });
+    };
+    UserController.prototype.createOffer = function (req, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userEmail, carId, price;
+            return __generator(this, function (_a) {
+                userEmail = req.user.email;
+                carId = body.carId, price = body.price;
+                return [2 /*return*/, this.offerService.createOffer({
+                        carId: carId,
+                        user: userEmail,
+                        price: price,
+                        createdAt: new Date()
+                    })];
+            });
+        });
+    };
+    UserController.prototype.updateCar = function (id, offerDTO) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updatedCar;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.offerService.updateOffer(id, offerDTO)];
+                    case 1:
+                        updatedCar = _a.sent();
+                        return [2 /*return*/, updatedCar];
+                }
+            });
+        });
+    };
+    UserController.prototype.deleteCar = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.offerService.deleteOffer(id)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, { message: 'Offer deleted successfully' }];
+                }
+            });
+        });
+    };
     __decorate([
         common_1.Post('follow'),
         __param(0, common_1.Request()), __param(1, common_1.Body())
@@ -188,6 +245,27 @@ var UserController = /** @class */ (function () {
         common_1.Get('recommendations/products'),
         __param(0, common_1.Request())
     ], UserController.prototype, "getRecommendedProducts");
+    __decorate([
+        common_1.Get('user-coffers'),
+        __param(0, common_1.Request())
+    ], UserController.prototype, "getOffers");
+    __decorate([
+        common_1.Get('offers-for-car/:id'),
+        __param(0, common_1.Param('id'))
+    ], UserController.prototype, "getOffersForCar");
+    __decorate([
+        common_1.Post('offer'),
+        __param(0, common_1.Request()),
+        __param(1, common_1.Body())
+    ], UserController.prototype, "createOffer");
+    __decorate([
+        common_1.Post('update-offer/:id'),
+        __param(0, common_1.Param('id')), __param(1, common_1.Body())
+    ], UserController.prototype, "updateCar");
+    __decorate([
+        common_1.Post('delete-offer/:id'),
+        __param(0, common_1.Param('id'))
+    ], UserController.prototype, "deleteCar");
     UserController = __decorate([
         common_1.Controller('user'),
         common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard)
